@@ -61,7 +61,7 @@ onMounted(() => {
         {{ portfolioData.bio }}
       </p>
 
-      <div class="grid grid-cols-2 gap-8 pt-8 border-t border-soft-black/10 dark:border-off-white/10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-soft-black/10 dark:border-off-white/10">
         <div>
           <h3 class="font-display text-xl font-bold mb-2">Location</h3>
           <p class="font-mono opacity-60">{{ portfolioData.personal.location }}</p>
