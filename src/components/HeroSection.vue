@@ -98,7 +98,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="relative min-h-[100dvh] flex flex-col justify-center items-center overflow-hidden py-20">
+  <section class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden py-20">
     <div ref="heroText" class="text-center leading-[0.8] select-none text-soft-black dark:text-off-white relative z-10">
       <h1 class="font-display text-[12vw] md:text-[14vw] font-bold uppercase tracking-tighter" aria-label="Menno Plochaet">
         <div class="overflow-hidden" aria-hidden="true"><span class="char inline-block">M</span><span class="char inline-block">e</span><span class="char inline-block">n</span><span class="char inline-block">n</span><span class="char inline-block">o</span></div>
