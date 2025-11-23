@@ -5,6 +5,7 @@ import { portfolioData } from '../data/portfolio'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { getLenis } from '../utils/lenis'
+import NotFound from './NotFound.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -173,36 +174,6 @@ const handleSwipe = () => {
   }
 }
 
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-  
-  const tl = gsap.timeline();
-  
-  tl.from('.project-header', {
-    y: 50,
-    opacity: 0,
-    duration: 1,
-    ease: 'power3.out'
-  })
-  .from('.project-meta', {
-    y: 20,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power3.out'
-  }, '-=0.5')
-  .from('.gallery-section', {
-    y: 30,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power3.out'
-  }, '-=0.6');
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown)
-  document.body.style.overflow = ''
-})
-
 const isScrolled = ref(false)
 const isMobile = ref(false)
 const currentCarouselIndex = ref(0)
@@ -241,12 +212,36 @@ const openLightboxWithItem = (index: number) => {
 onMounted(() => {
   window.addEventListener('scroll', updateScroll)
   window.addEventListener('resize', checkMobile)
+  window.addEventListener('keydown', handleKeydown)
   checkMobile()
+  
+  const tl = gsap.timeline();
+  
+  tl.from('.project-header', {
+    y: 50,
+    opacity: 0,
+    duration: 1,
+    ease: 'power3.out'
+  })
+  .from('.project-meta', {
+    y: 20,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power3.out'
+  }, '-=0.5')
+  .from('.gallery-section', {
+    y: 30,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power3.out'
+  }, '-=0.6');
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', updateScroll)
   window.removeEventListener('resize', checkMobile)
+  window.removeEventListener('keydown', handleKeydown)
+  document.body.style.overflow = ''
 })
 </script>
 
@@ -440,23 +435,8 @@ onUnmounted(() => {
 
     </div>
 
-    <div v-else class="min-h-screen flex flex-col items-center justify-center px-4">
-      <div class="text-center space-y-8 max-w-2xl">
-        <h1 class="font-display text-6xl md:text-8xl font-bold uppercase leading-tight">
-          Project<br/>
-          <span class="text-accent-blue">Not Found</span>
-        </h1>
-        <p class="font-mono text-lg md:text-xl opacity-60">
-          The project you're looking for doesn't exist or has been moved.
-        </p>
-        <RouterLink 
-          to="/" 
-          class="inline-block font-mono text-lg uppercase tracking-wider px-8 py-4 border-2 border-soft-black dark:border-off-white hover:bg-soft-black hover:text-off-white dark:hover:bg-off-white dark:hover:text-soft-black transition-all duration-300 mt-8"
-        >
-          ← Back to Home
-        </RouterLink>
-      </div>
-    </div>
+    <!-- 404 State -->
+    <NotFound v-else />
 
     <!-- Lightbox -->
     <Transition
