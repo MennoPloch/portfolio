@@ -16,6 +16,11 @@ const router = createRouter({
             name: 'project-detail',
             component: ProjectDetail,
             meta: { isDetail: true }
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            component: () => import('../views/NotFound.vue')
         }
     ],
     scrollBehavior(to, _from, savedPosition) {
