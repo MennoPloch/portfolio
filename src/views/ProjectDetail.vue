@@ -43,6 +43,16 @@ const mediaItems = computed<MediaItem[]>(() => {
   return items
 })
 
+// Helper function to get thumbnail path
+const getThumbnailPath = (originalPath: string): string => {
+  // Extract the path after /images/
+  const match = originalPath.match(/\/images\/(.+)/)
+  if (match) {
+    return `/images/Thumbnails/${match[1]}`
+  }
+  return originalPath
+}
+
 // Gallery State
 const activeMediaIndex = ref(0)
 const activeMedia = computed(() => mediaItems.value[activeMediaIndex.value])
@@ -358,7 +368,7 @@ onUnmounted(() => {
                 ></video>
                 <img 
                   v-else
-                  :src="item.src" 
+                  :src="getThumbnailPath(item.src)" 
                   class="w-full h-full object-cover"
                   loading="lazy"
                   alt="Thumbnail"
@@ -430,9 +440,22 @@ onUnmounted(() => {
 
     </div>
 
-    <div v-else class="pt-32 text-center">
-      <h1 class="font-display text-4xl">Project not found</h1>
-      <RouterLink to="/" class="font-mono text-accent-blue mt-4 inline-block">Return Home</RouterLink>
+    <div v-else class="min-h-screen flex flex-col items-center justify-center px-4">
+      <div class="text-center space-y-8 max-w-2xl">
+        <h1 class="font-display text-6xl md:text-8xl font-bold uppercase leading-tight">
+          Project<br/>
+          <span class="text-accent-blue">Not Found</span>
+        </h1>
+        <p class="font-mono text-lg md:text-xl opacity-60">
+          The project you're looking for doesn't exist or has been moved.
+        </p>
+        <RouterLink 
+          to="/" 
+          class="inline-block font-mono text-lg uppercase tracking-wider px-8 py-4 border-2 border-soft-black dark:border-off-white hover:bg-soft-black hover:text-off-white dark:hover:bg-off-white dark:hover:text-soft-black transition-all duration-300 mt-8"
+        >
+          ← Back to Home
+        </RouterLink>
+      </div>
     </div>
 
     <!-- Lightbox -->

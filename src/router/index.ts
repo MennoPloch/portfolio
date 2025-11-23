@@ -21,6 +21,16 @@ const router = createRouter({
     scrollBehavior(to, _from, savedPosition) {
         const lenis = getLenis()
 
+        // Always scroll to top on initial navigation or route change
+        if (to.name === 'home' && !savedPosition) {
+            if (lenis) {
+                lenis.scrollTo(0, { immediate: true })
+            } else {
+                window.scrollTo(0, 0)
+            }
+            return { top: 0 }
+        }
+
         // If navigating to a detail page, ALWAYS start at top
         if (to.meta.isDetail) {
             if (lenis) {

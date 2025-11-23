@@ -85,7 +85,7 @@ onMounted(() => {
       <div 
         v-for="project in portfolioData.projects" 
         :key="project.id"
-        class="project-item group relative flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-soft-black/10 dark:border-off-white/10 transition-opacity duration-300 hide-cursor cursor-none"
+        class="project-item group relative flex flex-col 2xl:flex-row 2xl:items-center justify-between py-8 border-b border-soft-black/10 dark:border-off-white/10 transition-opacity duration-300 hide-cursor cursor-none"
         @mouseenter="onMouseEnter(project.image || '')"
         @mouseleave="onMouseLeave"
         @click="navigateToProject(project.slug)"
@@ -104,12 +104,12 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="md:text-right mt-4 md:mt-0 z-10 flex flex-col items-end gap-2">
-          <p class="font-mono max-w-md opacity-80 group-hover:-translate-x-4 transition-transform duration-300">
+        <div class="2xl:text-right mt-6 2xl:mt-0 z-10 flex flex-col items-start 2xl:items-end gap-2">
+          <p class="font-mono max-w-md opacity-80 group-hover:translate-x-4 2xl:group-hover:-translate-x-4 transition-transform duration-300 delay-100">
             {{ project.description }}
           </p>
-          <!-- Mobile Click Indicator -->
-          <div class="md:hidden flex items-center gap-2 text-accent-blue font-mono text-sm uppercase tracking-wider">
+          <!-- Mobile Click Indicator - Only on actual touch devices -->
+          <div class="[@media(hover:none)]:flex hidden items-center gap-2 text-accent-blue font-mono text-sm uppercase tracking-wider">
             <span>View Project</span>
             <span>→</span>
           </div>
