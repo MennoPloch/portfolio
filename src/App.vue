@@ -1,30 +1,52 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
+import Lenis from 'lenis'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { RouterView } from 'vue-router'
+import ThemeToggle from './components/ThemeToggle.vue'
+import Footer from './components/Footer.vue'
+import CustomCursor from './components/CustomCursor.vue'
+import Preloader from './components/Preloader.vue'
+import { setLenis } from './utils/lenis'
+
+gsap.registerPlugin(ScrollTrigger)
+
+let lenis: Lenis
+
+onMounted(() => {
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    orientation: 'vertical',
+    gestureOrientation: 'vertical',
+    smoothWheel: true,
+    touchMultiplier: 2,
+  })
+
+  setLenis(lenis)
+
+  function raf(time: number) {
+    lenis.raf(time)
+    requestAnimationFrame(raf)
+  }
+
+  requestAnimationFrame(raf)
+})
+
+onUnmounted(() => {
+  lenis.destroy()
+})
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="min-h-screen bg-off-white dark:bg-soft-black text-soft-black dark:text-off-white transition-colors duration-500 overflow-x-hidden font-sans selection:bg-accent-blue selection:text-soft-black">
+    <Preloader />
+    <CustomCursor />
+    <ThemeToggle />
+    
+    <RouterView />
+    
+    <Footer />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
