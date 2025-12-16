@@ -30,7 +30,7 @@ import { portfolioData } from '../data/portfolio'
     <div class="mt-16 flex flex-col md:flex-row gap-8 items-center">
 
       <a :href="portfolioData.personal.linkedin" target="_blank" class="font-mono text-sm hover:text-accent-blue transition-colors uppercase tracking-widest">LinkedIn</a>
-      <a href="https://github.com/MennoPloch" target="_blank" class="font-mono text-sm hover:text-accent-blue transition-colors uppercase tracking-widest">GitHub</a>
+
     </div>
 
   </section>
