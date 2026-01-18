@@ -29,6 +29,7 @@ const onLeave = () => {
   gsap.to('.theme-icon', { scale: 1, rotation: 0, duration: 0.4, ease: 'power2.out' })
 }
 
+onMounted(() => {
   if (localStorage.theme === 'dark') {
     isDark.value = true
     document.documentElement.classList.add('dark')
