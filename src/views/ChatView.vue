@@ -5,13 +5,13 @@ import { marked } from 'marked';
 import BackButton from '../components/BackButton.vue';
 import MatrixRain from '../components/MatrixRain.vue';
 import ChatProjectCard from '../components/ChatProjectCard.vue';
-import { messages, isLoading, addMessage, clearChat, commandHistory, addToHistory } from '../store/chat';
+import { messages, isLoading, addMessage, clearChat, commandHistory, addToHistory, isMatrixActive } from '../store/chat';
 import { portfolioData } from '../data/portfolio';
 
 const router = useRouter();
 const userInput = ref('');
 const inputField = ref<HTMLTextAreaElement | null>(null);
-const showMatrix = ref(false);
+// showMatrix is now global: isMatrixActive
 const pendingAction = ref<{ type: 'theme_switch', targetMode: 'dark' | 'light' } | null>(null);
 
 // Autocomplete Logic
@@ -292,8 +292,8 @@ const handleCommand = (input: string): string | null => {
       return `Goodbye! Redirecting to home... 👋`;
 
     case '/matrix':
-      showMatrix.value = !showMatrix.value;
-      if (showMatrix.value) {
+      isMatrixActive.value = !isMatrixActive.value;
+      if (isMatrixActive.value) {
         return `🕶️ **Matrix mode activated.** Follow the white rabbit.`;
       } else {
         return `🔌 **Matrix mode deactivated.** Welcome back to the real world.`;
@@ -624,7 +624,7 @@ const renderMarkdown = (text: string) => {
         </div>
 
         <!-- Matrix Rain Effect (Fixed Background) -->
-        <MatrixRain v-if="showMatrix" />
+        <MatrixRain v-if="isMatrixActive" />
 
         <!-- Top Fade Gradient (Fixed Top) -->
         <div class="fixed top-0 left-0 w-full h-24 bg-gradient-to-b from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-30 pointer-events-none transition-colors duration-300"></div>

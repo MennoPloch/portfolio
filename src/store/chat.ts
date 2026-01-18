@@ -19,6 +19,7 @@ const initialHistory: string[] = savedHistory ? JSON.parse(savedHistory) : []
 export const messages = ref<Message[]>(initialMessages)
 export const commandHistory = ref<string[]>(initialHistory)
 export const isLoading = ref(false)
+export const isMatrixActive = ref(false)
 
 // Watch for changes and save to local storage
 watch(messages, (newMessages) => {
