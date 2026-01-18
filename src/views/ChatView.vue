@@ -616,22 +616,27 @@ const renderMarkdown = (text: string) => {
 </script>
 
     <template>
-      <div class="min-h-screen bg-white dark:bg-soft-black text-black dark:text-white transition-colors duration-300 font-sans">
+      <div class="h-[100dvh] flex flex-col bg-white dark:bg-soft-black text-black dark:text-white transition-colors duration-300 font-sans overflow-hidden">
         
-        <!-- Back Button -->
-        <BackButton />
+        <!-- Back Button (Fixed/Absolute) -->
+        <div class="absolute top-0 left-0 z-50">
+          <BackButton />
+        </div>
 
-        <!-- Matrix Rain Effect -->
+        <!-- Matrix Rain Effect (Fixed Background) -->
         <MatrixRain v-if="showMatrix" />
 
-        <!-- Top Fade Gradient -->
+        <!-- Top Fade Gradient (Fixed Top) -->
         <div class="fixed top-0 left-0 w-full h-24 bg-gradient-to-b from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-30 pointer-events-none transition-colors duration-300"></div>
 
-        <!-- Chat Container -->
+        <!-- Chat Container (Scrollable Area) -->
         <div 
-          class="min-h-screen px-6 pt-28 pb-32 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto"
+          class="flex-1 overflow-y-auto w-full px-6 pt-28 pb-4 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
         >
-          <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-6 min-h-full justify-end">
+            <!-- Spacer to push content down initially if empty -->
+            <div class="flex-1"></div>
+
             <div 
               v-for="(msg, index) in messages" 
               :key="index"
@@ -674,8 +679,8 @@ const renderMarkdown = (text: string) => {
           </div>
         </div>
 
-        <!-- Input Area -->
-        <div class="fixed bottom-0 left-0 w-full p-6 pt-12 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300">
+        <!-- Input Area (Flex Bottom) -->
+        <div class="w-full p-6 pt-12 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
           <div class="max-w-3xl mx-auto relative font-mono">
             
             <!-- Command Suggestions -->
