@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -11,6 +12,9 @@ import Preloader from './components/Preloader.vue'
 import { setLenis } from './utils/lenis'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const route = useRoute()
+const showFooter = computed(() => route.path !== '/chat')
 
 let lenis: Lenis
 
@@ -47,6 +51,6 @@ onUnmounted(() => {
     
     <RouterView />
     
-    <Footer />
+    <Footer v-if="showFooter" />
   </div>
 </template>

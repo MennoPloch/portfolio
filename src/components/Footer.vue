@@ -46,6 +46,11 @@ onMounted(() => {
         <a href="https://www.linkedin.com/in/menno-plochaet-17321623b/" target="_blank" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all">LinkedIn</a>
 
         <a href="mailto:plochaetm@gmail.com" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all">Email</a>
+
+        <router-link to="/chat" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all flex items-center gap-2">
+          <span>Talk to AI</span>
+          <span class="w-1.5 h-3 bg-current animate-pulse"></span>
+        </router-link>
       </div>
 
       <div class="flex flex-col items-center md:items-end gap-2 opacity-60">

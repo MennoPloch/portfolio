@@ -17,8 +17,16 @@ const toggleTheme = () => {
 
   gsap.fromTo('.theme-icon', 
     { rotation: 0, scale: 0.8 },
-    { rotation: 360, scale: 1, duration: 0.5, ease: 'back.out(1.7)' }
+    { rotation: 360, scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.5)' }
   )
+}
+
+const onEnter = () => {
+  gsap.to('.theme-icon', { scale: 1.1, rotation: 15, duration: 0.4, ease: 'back.out(1.7)' })
+}
+
+const onLeave = () => {
+  gsap.to('.theme-icon', { scale: 1, rotation: 0, duration: 0.4, ease: 'power2.out' })
 }
 
 onMounted(() => {
@@ -35,7 +43,9 @@ onMounted(() => {
 <template>
   <button 
     @click="toggleTheme" 
-    class="fixed top-8 right-8 z-50 p-4 rounded-full bg-soft-black dark:bg-off-white text-off-white dark:text-soft-black transition-colors duration-300 hover:scale-110 active:scale-95"
+    @mouseenter="onEnter"
+    @mouseleave="onLeave"
+    class="fixed top-8 right-8 z-50 p-4 rounded-full bg-soft-black dark:bg-off-white text-off-white dark:text-soft-black transition-colors duration-300"
     aria-label="Toggle Theme"
   >
     <div class="theme-icon w-6 h-6 flex items-center justify-center relative">

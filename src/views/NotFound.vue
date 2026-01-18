@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import gsap from 'gsap'
+import BackButton from '../components/BackButton.vue'
 
-const containerRef = ref<HTMLElement | null>(null)
 const titleRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
@@ -22,17 +22,11 @@ onMounted(() => {
     ease: 'power2.out',
     stagger: 0.1
   }, '-=0.5')
-  .from('.back-button', {
-    y: 20,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, '-=0.6')
 })
 </script>
 
 <template>
-  <div ref="containerRef" class="min-h-screen bg-off-white dark:bg-soft-black flex flex-col items-center justify-center px-4 overflow-hidden relative">
+  <div class="min-h-screen bg-off-white dark:bg-soft-black flex flex-col items-center justify-center px-4 overflow-hidden relative">
     
     <!-- Background Decor -->
     <div class="absolute inset-0 pointer-events-none opacity-5">
@@ -54,15 +48,15 @@ onMounted(() => {
         The page you are looking for does not exist or has been moved.
       </p>
 
-      <div class="back-button pt-8">
-        <RouterLink 
-          to="/" 
-          class="inline-flex items-center gap-3 font-mono text-lg uppercase tracking-wider px-8 py-4 border-2 border-soft-black dark:border-off-white hover:bg-soft-black hover:text-off-white dark:hover:bg-off-white dark:hover:text-soft-black transition-all duration-300 group"
-        >
-          <span>← Back to Home</span>
-        </RouterLink>
+      <div class="back-button pt-8 flex justify-center">
+        <router-link to="/chat" class="font-mono text-sm uppercase tracking-widest border border-soft-black/20 dark:border-off-white/20 px-6 py-3 rounded-full hover:bg-soft-black hover:text-off-white dark:hover:bg-off-white dark:hover:text-soft-black transition-all duration-300 flex items-center gap-3 group">
+          <span>Ask AI for help</span>
+          <span class="w-1.5 h-3 bg-current animate-pulse"></span>
+        </router-link>
       </div>
     </div>
+
+    <BackButton />
 
   </div>
 </template>

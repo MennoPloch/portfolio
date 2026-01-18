@@ -16,7 +16,7 @@ const onMouseMove = (e: MouseEvent) => {
     // Actually, let's just let the mouseenter/leave handle opacity, but if we are moving and not in lightbox, make sure it's visible if it was hidden by lightbox
     // Check for hide-cursor class
     const target = e.target as HTMLElement
-    if (target.closest('.hide-cursor')) {
+    if (target && target.closest && target.closest('.hide-cursor')) {
       gsap.to([cursor.value, follower.value], { opacity: 0, duration: 0.2 })
       return
     }

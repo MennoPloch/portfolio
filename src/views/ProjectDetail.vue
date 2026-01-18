@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { portfolioData } from '../data/portfolio'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { getLenis } from '../utils/lenis'
 import NotFound from './NotFound.vue'
+import BackButton from '../components/BackButton.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -249,21 +250,7 @@ onUnmounted(() => {
   <div class="min-h-screen bg-off-white dark:bg-soft-black transition-colors duration-500">
     
     <!-- Navigation -->
-    <div class="fixed top-8 left-4 md:left-8 z-40 pointer-events-none">
-      <RouterLink 
-        to="/" 
-        class="pointer-events-auto inline-flex items-center justify-center transition-all duration-500 ease-out"
-        :class="[
-          isScrolled 
-            ? 'bg-soft-black text-off-white dark:bg-off-white dark:text-soft-black px-6 py-2 rounded-full shadow-lg' 
-            : 'text-soft-black dark:text-off-white opacity-60 hover:opacity-100 mix-blend-difference'
-        ]"
-      >
-        <span class="font-mono text-sm uppercase tracking-widest">
-          {{ isScrolled ? 'Back' : '← Back to Home' }}
-        </span>
-      </RouterLink>
-    </div>
+    <BackButton />
 
     <div v-if="project" class="pb-24">
       
@@ -410,14 +397,14 @@ onUnmounted(() => {
               </div>
               
               <!-- Counter -->
-              <span class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm pointer-events-none">
+              <span v-if="mediaItems.length > 1" class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm pointer-events-none">
                 {{ currentCarouselIndex + 1 }} / {{ mediaItems.length }}
               </span>
             </div>
 
             
             <!-- Mobile Carousel Indicators -->
-            <div class="flex justify-center gap-2">
+            <div v-if="mediaItems.length > 1" class="flex justify-center gap-2">
               <button 
                 v-for="(_, index) in mediaItems" 
                 :key="index"
@@ -427,7 +414,7 @@ onUnmounted(() => {
               ></button>
             </div>
             
-            <p class="text-center text-xs font-mono opacity-50">Swipe to view more</p>
+            <p v-if="mediaItems.length > 1" class="text-center text-xs font-mono opacity-50">Swipe to view more</p>
           </div>
 
         </div>
@@ -456,6 +443,7 @@ onUnmounted(() => {
       >
         <!-- Navigation Arrows (Desktop) -->
         <button 
+          v-if="mediaItems.length > 1"
           @click.stop="prevMedia"
           class="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-[60] w-12 h-12 items-center justify-center rounded-full bg-soft-black/50 text-off-white border border-off-white/20 hover:bg-accent-blue hover:border-accent-blue transition-all duration-300 backdrop-blur-sm group"
           aria-label="Previous"
@@ -464,6 +452,7 @@ onUnmounted(() => {
         </button>
 
         <button 
+          v-if="mediaItems.length > 1"
           @click.stop="nextMedia"
           class="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-[60] w-12 h-12 items-center justify-center rounded-full bg-soft-black/50 text-off-white border border-off-white/20 hover:bg-accent-blue hover:border-accent-blue transition-all duration-300 backdrop-blur-sm group"
           aria-label="Next"
@@ -505,6 +494,7 @@ onUnmounted(() => {
         <div class="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-4 z-[60] pointer-events-none">
           <!-- Dots -->
           <div 
+            v-if="mediaItems.length > 1"
             class="flex gap-3 pointer-events-auto bg-soft-black/50 px-6 py-3 rounded-full backdrop-blur-sm"
             @click.stop
           >
@@ -522,7 +512,7 @@ onUnmounted(() => {
           </div>
           
           <!-- Mobile Hint -->
-          <p class="md:hidden font-mono text-xs text-off-white/60 uppercase tracking-widest">
+          <p v-if="mediaItems.length > 1" class="md:hidden font-mono text-xs text-off-white/60 uppercase tracking-widest">
             Swipe to view more
           </p>
         </div>

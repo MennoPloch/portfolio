@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import gsap from 'gsap'
 import { portfolioData } from '../data/portfolio'
 import WavingHand from './WavingHand.vue'
@@ -27,9 +27,41 @@ onMounted(() => {
     x: 50,
     opacity: 0,
     duration: 1,
-    ease: 'power3.out'
   }, '-=0.8')
 })
+
+onUnmounted(() => {
+  clearInterval(scrambleInterval)
+})
+
+// Scramble Effect
+const originalText = "Say hello to my digital twin"
+const scrambledText = ref(originalText)
+const chars = "!<>-_\\/[]{}—=+*^?#________"
+let scrambleInterval: any = null
+
+const startScramble = () => {
+  let iteration = 0
+  clearInterval(scrambleInterval)
+  
+  scrambleInterval = setInterval(() => {
+    scrambledText.value = originalText
+      .split("")
+      .map((_, index) => {
+        if (index < iteration) {
+          return originalText[index]
+        }
+        return chars[Math.floor(Math.random() * chars.length)]
+      })
+      .join("")
+    
+    if (iteration >= originalText.length) {
+      clearInterval(scrambleInterval)
+    }
+    
+    iteration += 2 // Speed of resolve (much faster)
+  }, 25)
+}
 </script>
 
 <template>
@@ -60,6 +92,20 @@ onMounted(() => {
         <span class="font-bold text-2xl mr-2">Hi there! <WavingHand /></span>
         {{ portfolioData.bio }}
       </p>
+
+      <div class="pt-2">
+        <router-link 
+          to="/chat" 
+          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-accent-blue hover:opacity-80 transition-opacity group"
+          @mouseenter="startScramble"
+        >
+          <span class="relative overflow-hidden">
+            <span class="invisible">Say hello to my digital twin</span>
+            <span class="absolute top-0 left-0">{{ scrambledText }}</span>
+          </span>
+          <span class="group-hover:translate-x-1 transition-transform">-></span>
+        </router-link>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-soft-black/10 dark:border-off-white/10">
         <div>
