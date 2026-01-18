@@ -103,6 +103,16 @@ const handleInput = () => {
   }
 };
 
+const handleFocus = async () => {
+  // Wait for keyboard to animate up
+  await new Promise(resolve => setTimeout(resolve, 300));
+  scrollToBottom();
+  
+  // Do it again slightly later just in case
+  setTimeout(scrollToBottom, 600);
+};
+
+
 const handleKeyDown = (e: KeyboardEvent) => {
   if (!showSuggestions.value) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -747,6 +757,7 @@ const renderMarkdown = (text: string) => {
                 v-model="userInput"
                 @keydown="handleKeyDown"
                 @input="handleInput"
+                @focus="handleFocus"
                 rows="1"
                 placeholder="Type a message..."
                 class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 focus:outline-none focus:border-black dark:focus:border-white transition-all duration-300 text-lg text-black dark:text-white placeholder:text-black/20 dark:placeholder:text-white/20 hide-cursor cursor-text hover:border-black/30 dark:hover:border-white/30 resize-none overflow-hidden min-h-[52px] break-all pr-10"
