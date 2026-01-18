@@ -11,6 +11,11 @@ import { portfolioData } from '../data/portfolio';
 const router = useRouter();
 const userInput = ref('');
 const inputField = ref<HTMLTextAreaElement | null>(null);
+const isMobile = ref(false);
+
+const updateMobileStatus = () => {
+  isMobile.value = window.innerWidth < 768;
+};
 
 const pendingAction = ref<{ type: 'theme_switch', targetMode: 'dark' | 'light' } | null>(null);
 
@@ -50,6 +55,10 @@ const filteredCommands = computed(() => {
   
   // If just typing "/", show only core commands
   if (input === '/') {
+    if (isMobile.value) {
+      // Show only 5 most important commands on mobile
+      return ['/help', '/projects', '/about', '/clear', '/theme'];
+    }
     return coreCommands;
   }
   
@@ -345,6 +354,9 @@ onMounted(async () => {
     "Hello! I'm Menno's virtual self. Ask me about my favorite tech or projects."
   ];
 
+  updateMobileStatus();
+  window.addEventListener('resize', updateMobileStatus);
+
   const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
   
   // Check if chat is empty OR only contains a previous greeting (any of them)
@@ -394,6 +406,7 @@ onUnmounted(() => {
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'auto';
   }
+  window.removeEventListener('resize', updateMobileStatus);
 });
 
 const chatContainer = ref<HTMLElement | null>(null);
