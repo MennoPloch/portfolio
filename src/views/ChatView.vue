@@ -11,10 +11,10 @@ import { portfolioData } from '../data/portfolio';
 const router = useRouter();
 const userInput = ref('');
 const inputField = ref<HTMLTextAreaElement | null>(null);
-// showMatrix is now global: isMatrixActive
+
 const pendingAction = ref<{ type: 'theme_switch', targetMode: 'dark' | 'light' } | null>(null);
 
-// Autocomplete Logic
+
 const coreCommands = [
   '/help', '/ls', '/projects', '/cd', '/clear', '/whoami', 
   '/pwd', '/about', '/theme', '/exit'
@@ -177,7 +177,7 @@ const insertSlash = () => {
   inputField.value?.focus();
 };
 
-// Command handler for terminal-style commands
+
 const handleCommand = (input: string): string | null => {
   const trimmed = input.trim().toLowerCase();
   const parts = trimmed.split(' ');
@@ -330,7 +330,7 @@ const handleCommand = (input: string): string | null => {
   }
 };
 
-// Initial greeting logic
+
 onMounted(async () => {
   const greetings = [
     "Hey. I'm Menno's digital twin. Ask me about my projects, skills, or bouldering.",
@@ -364,26 +364,25 @@ onMounted(async () => {
     }, 500);
   }
   
-  // Scroll to bottom on mount (instant first, then delayed check)
-  // Disable browser scroll restoration to ensure we control the position
+
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
 
   const forceScroll = () => {
-    if (chatContainer.value) {
+    if (window.innerWidth < 768 && chatContainer.value) {
       chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+    } else {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
     }
   };
 
   await nextTick();
   forceScroll();
   
-  // Retry a few times to handle layout shifts/rendering
   const interval = setInterval(forceScroll, 50);
   setTimeout(() => clearInterval(interval), 500);
   
-  // Focus input ONLY on desktop to prevent keyboard popping up on mobile
   nextTick(() => {
     if (window.innerWidth > 768) {
       inputField.value?.focus();
@@ -401,9 +400,14 @@ const chatContainer = ref<HTMLElement | null>(null);
 
 const scrollToBottom = async () => {
   await nextTick();
-  if (chatContainer.value) {
+  if (window.innerWidth < 768 && chatContainer.value) {
     chatContainer.value.scrollTo({
       top: chatContainer.value.scrollHeight,
+      behavior: 'smooth'
+    });
+  } else {
+    window.scrollTo({
+      top: document.body.scrollHeight,
       behavior: 'smooth'
     });
   }
@@ -622,23 +626,23 @@ const renderMarkdown = (text: string) => {
 </script>
 
     <template>
-      <div class="h-[100dvh] flex flex-col bg-white dark:bg-soft-black text-black dark:text-white transition-colors duration-300 font-sans overflow-hidden">
+      <div class="h-[100dvh] md:h-auto md:min-h-screen flex flex-col bg-white dark:bg-soft-black text-black dark:text-white transition-colors duration-300 font-sans overflow-hidden md:overflow-visible">
         
-        <!-- Back Button (Fixed/Absolute) -->
+        <!-- Back Button -->
         <div class="absolute top-0 left-0 z-50">
           <BackButton />
         </div>
 
-        <!-- Matrix Rain Effect (Fixed Background) -->
+        <!-- Matrix Rain Effect -->
         <MatrixRain v-if="isMatrixActive" />
 
-        <!-- Top Fade Gradient (Fixed Top) -->
+        <!-- Top Fade Gradient -->
         <div class="fixed top-0 left-0 w-full h-24 bg-gradient-to-b from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-30 pointer-events-none transition-colors duration-300"></div>
 
-        <!-- Chat Container (Scrollable Area) -->
+        <!-- Chat Container -->
         <div 
           ref="chatContainer"
-          class="flex-1 overflow-y-auto w-full px-6 pt-28 pb-4 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
+          class="flex-1 overflow-y-auto md:overflow-visible w-full px-6 pt-28 pb-4 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
         >
           <div class="flex flex-col gap-6 min-h-full justify-end">
             <!-- Spacer to push content down initially if empty -->
@@ -686,8 +690,8 @@ const renderMarkdown = (text: string) => {
           </div>
         </div>
 
-        <!-- Input Area (Flex Bottom) -->
-        <div class="w-full p-6 pt-12 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
+        <!-- Input Area -->
+        <div class="w-full md:fixed md:bottom-0 md:left-0 p-6 pt-12 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
           <div class="max-w-3xl mx-auto relative font-mono">
             
             <!-- Command Suggestions -->
@@ -740,7 +744,7 @@ const renderMarkdown = (text: string) => {
     </template>
     
 <style scoped>
-/* Markdown Table Styling */
+
 :deep(table) {
   width: 100%;
   border-collapse: collapse;
@@ -761,7 +765,7 @@ const renderMarkdown = (text: string) => {
 </style>
 
 <style>
-/* Custom Scrollbar for Webkit - Mobile */
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -776,7 +780,7 @@ const renderMarkdown = (text: string) => {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Hide scrollbar on desktop only */
+
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
     display: none;
@@ -787,7 +791,7 @@ const renderMarkdown = (text: string) => {
   }
 }
 
-/* Typing mode: make paragraphs inline so cursor stays at end */
+
 .typing-mode p {
   display: inline;
 }
