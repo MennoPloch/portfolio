@@ -371,7 +371,9 @@ onMounted(async () => {
   }
 
   const forceScroll = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
+    if (chatContainer.value) {
+      chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+    }
   };
 
   await nextTick();
@@ -395,12 +397,16 @@ onUnmounted(() => {
   }
 });
 
+const chatContainer = ref<HTMLElement | null>(null);
+
 const scrollToBottom = async () => {
   await nextTick();
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: 'smooth'
-  });
+  if (chatContainer.value) {
+    chatContainer.value.scrollTo({
+      top: chatContainer.value.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
 };
 
 const adjustHeight = () => {
@@ -631,6 +637,7 @@ const renderMarkdown = (text: string) => {
 
         <!-- Chat Container (Scrollable Area) -->
         <div 
+          ref="chatContainer"
           class="flex-1 overflow-y-auto w-full px-6 pt-28 pb-4 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
         >
           <div class="flex flex-col gap-6 min-h-full justify-end">
