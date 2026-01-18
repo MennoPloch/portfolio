@@ -435,17 +435,17 @@ onUnmounted(() => {
 
 const chatContainer = ref<HTMLElement | null>(null);
 
-const scrollToBottom = async () => {
+const scrollToBottom = async (behavior: ScrollBehavior = 'smooth') => {
   await nextTick();
   if (window.innerWidth < 768 && chatContainer.value) {
     chatContainer.value.scrollTo({
       top: chatContainer.value.scrollHeight,
-      behavior: 'smooth'
+      behavior
     });
   } else {
     window.scrollTo({
       top: document.body.scrollHeight,
-      behavior: 'smooth'
+      behavior
     });
   }
 };
@@ -476,7 +476,7 @@ const typeMessage = async (text: string, speed = 20) => {
           ...currentMsg,
           content: currentMsg.content + part
         };
-        await scrollToBottom();
+        await scrollToBottom('auto');
         // Pause for typing effect
         await new Promise(resolve => setTimeout(resolve, speed * 5));
       }
@@ -494,7 +494,7 @@ const typeMessage = async (text: string, speed = 20) => {
           isTyping: true
         };
         currentIndex++;
-        await scrollToBottom();
+        await scrollToBottom('auto');
         await new Promise(resolve => setTimeout(resolve, speed));
       } else {
         break; 
@@ -528,14 +528,17 @@ const sendMessage = async () => {
           document.documentElement.classList.add('dark');
           localStorage.theme = 'dark';
           addMessage('model', `🌑 Switched to **dark mode**.`);
+          await scrollToBottom('auto');
         } else {
           document.documentElement.classList.remove('dark');
           localStorage.theme = 'light';
           addMessage('model', `☀️ Switched to **light mode**.`);
+          await scrollToBottom('auto');
         }
       }
     } else {
       addMessage('model', 'Cancelled.');
+      await scrollToBottom('auto');
     }
     pendingAction.value = null;
     return;
@@ -597,6 +600,7 @@ const sendMessage = async () => {
     if (response.status === 429 || (data.error && data.error.toLowerCase().includes('quota'))) {
       isLoading.value = false;
       addMessage('model', `⚠️ **AI quota exceeded!**\n\nYou can still use terminal commands like \`/ls\`, \`/cd\`, \`/help\`, etc.\n\nTry again later or contact me at **plochaetm@gmail.com**`);
+      await scrollToBottom('auto');
       return;
     }
     
@@ -614,8 +618,10 @@ const sendMessage = async () => {
     // Check if it's a quota error
     if (errorMsg.toLowerCase().includes('quota') || errorMsg.toLowerCase().includes('rate limit')) {
       addMessage('model', `⚠️ **AI quota exceeded!**\n\nYou can still use terminal commands like \`/ls\`, \`/cd\`, \`/help\`, etc.\n\nTry again later or contact me at **plochaetm@gmail.com**`);
+      await scrollToBottom('auto');
     } else {
       addMessage('model', 'Oops, something went wrong. Please try again later or email plochaetm@gmail.com.');
+      await scrollToBottom('auto');
     }
     isLoading.value = false;
   }
@@ -760,7 +766,8 @@ const renderMarkdown = (text: string) => {
                 @focus="handleFocus"
                 rows="1"
                 placeholder="Type a message..."
-                class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 focus:outline-none focus:border-black dark:focus:border-white transition-all duration-300 text-lg text-black dark:text-white placeholder:text-black/20 dark:placeholder:text-white/20 hide-cursor cursor-text hover:border-black/30 dark:hover:border-white/30 resize-none overflow-hidden min-h-[52px] break-all pr-10"
+                class="w-full bg-transparent border-b border-black/10 dark:border-white/10 py-3 focus:outline-none focus:border-black dark:focus:border-white transition-all duration-300 text-lg text-black dark:text-white placeholder:text-black/20 dark:placeholder:text-white/20 hide-cursor cursor-text hover:border-black/30 dark:hover:border-white/30 resize-none overflow-hidden min-h-[52px] break-words"
+                :class="{ 'pr-10': !userInput, 'pr-2': userInput }"
               ></textarea>
               
               <!-- Minimalist Command Trigger -->
