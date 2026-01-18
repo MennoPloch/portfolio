@@ -21,6 +21,11 @@ const router = createRouter({
             path: '/:pathMatch(.*)*',
             name: 'not-found',
             component: () => import('../views/NotFound.vue')
+        },
+        {
+            path: '/chat',
+            name: 'chat',
+            component: () => import('../views/ChatView.vue')
         }
     ],
     scrollBehavior(to, _from, savedPosition) {
@@ -60,6 +65,21 @@ const router = createRouter({
         }
         return { top: 0 }
     }
+})
+
+import { useAnalytics } from '../composables/useAnalytics'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+const { logPageView } = useAnalytics()
+
+router.afterEach((to) => {
+    logPageView(to.fullPath)
+
+    // Refresh ScrollTrigger to recalculate positions after navigation
+    // This prevents scroll jumps when returning from detail pages
+    setTimeout(() => {
+        ScrollTrigger.refresh()
+    }, 100)
 })
 
 export default router
