@@ -11,7 +11,7 @@ onMounted(() => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  // Set canvas size
+
   const resize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -19,14 +19,14 @@ onMounted(() => {
   window.addEventListener('resize', resize);
   resize();
 
-  // Matrix characters (katakana + latin)
+
   const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const charArray = chars.split('');
   
   const fontSize = 16;
   const columns = canvas.width / fontSize;
   
-  // Array of drops - one per column
+
   const drops: number[] = [];
   for (let i = 0; i < columns; i++) {
     drops[i] = 1;
@@ -34,7 +34,7 @@ onMounted(() => {
 
   let frameCount = 0;
 
-  // Theme detection optimization
+
   let isDark = document.documentElement.classList.contains('dark');
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
@@ -50,18 +50,18 @@ onMounted(() => {
   });
 
   const draw = () => {
-    // Update every 12th frame
+
     frameCount++;
     if (frameCount % 12 !== 0) {
       animationId = requestAnimationFrame(draw);
       return;
     }
 
-    // Fade out previous frame
+
     ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Text color
+
     ctx.fillStyle = isDark ? '#0F0' : '#003300'; // Bright green in dark, dark green in light
     ctx.font = `${fontSize}px monospace`;
 
@@ -71,12 +71,12 @@ onMounted(() => {
       
       ctx.fillText(text, i * fontSize, dropY * fontSize);
 
-      // Reset drop to top randomly
+
       if (dropY * fontSize > canvas.height && Math.random() > 0.975) {
         drops[i] = 0;
       }
 
-      // Increment Y coordinate
+
       drops[i] = (drops[i] || 0) + 1;
     }
     

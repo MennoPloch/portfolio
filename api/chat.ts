@@ -53,7 +53,7 @@ Proudest project: [MyCLOUDMEN](/project/mycloudmen).
    - NEVER invent facts. NO "The Matrix", NO made-up preferences.
 `;
 
-// Pre-compute the full knowledge base string (stripping keywords to save tokens)
+
 const FULL_CONTEXT = knowledgeBase.map(entry => entry.content).join('\n\n');
 
 export default async function handler(request: Request) {
@@ -72,12 +72,11 @@ export default async function handler(request: Request) {
             });
         }
 
-        // Construct the full message with the ENTIRE knowledge base
-        // We inject it into the user message to ensure it's always "fresh" in the context window
+
         const fullMessage = `[FULL_KNOWLEDGE_BASE]\n${FULL_CONTEXT}\n\n[USER_QUESTION]\n${message}`;
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        // Using the requested efficient model
+
         const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
         const chat = model.startChat({
@@ -101,18 +100,18 @@ export default async function handler(request: Request) {
         const response = await result.response;
         let text = response.text();
 
-        // Check for [MISSING_INFO] tag
+
         if (text.includes('[MISSING_INFO]')) {
-            // Log to Supabase
+
             const supabaseUrl = process.env.VITE_SUPABASE_URL;
             const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 
             if (supabaseUrl && supabaseKey) {
-                // Dynamic import to avoid issues if package is missing in some envs
+
                 const { createClient } = await import('@supabase/supabase-js');
                 const supabase = createClient(supabaseUrl, supabaseKey);
 
-                // Await the logging to ensure it finishes before the function exits
+
                 try {
                     const { error } = await supabase.from('ai_learning_logs').insert({
                         question: message
@@ -124,7 +123,7 @@ export default async function handler(request: Request) {
                 }
             }
 
-            // Remove the tag from the response shown to user
+
             text = text.replace('[MISSING_INFO]', '').trim();
         }
 
@@ -135,7 +134,7 @@ export default async function handler(request: Request) {
     } catch (error: any) {
         console.error('Error in chat API:', error);
 
-        // Check if it's a quota/rate limit error (429)
+
         const errorMessage = error?.message || '';
         const isQuotaError = error?.status === 429 ||
             errorMessage.includes('429') ||

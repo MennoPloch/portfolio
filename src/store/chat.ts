@@ -9,7 +9,7 @@ export interface Message {
 const STORAGE_KEY = 'menno_portfolio_chat_history'
 const COMMAND_HISTORY_KEY = 'menno_portfolio_command_history'
 
-// Load initial state from local storage
+
 const savedMessages = localStorage.getItem(STORAGE_KEY)
 const initialMessages: Message[] = savedMessages ? JSON.parse(savedMessages) : []
 
@@ -21,7 +21,7 @@ export const commandHistory = ref<string[]>(initialHistory)
 export const isLoading = ref(false)
 export const isMatrixActive = ref(false)
 
-// Watch for changes and save to local storage
+
 watch(messages, (newMessages) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newMessages))
 }, { deep: true })
@@ -43,6 +43,5 @@ export const addToHistory = (command: string) => {
 export const clearChat = () => {
     messages.value = []
     localStorage.removeItem(STORAGE_KEY)
-    // Optional: keep command history or clear it? Let's keep it for utility, or clear if requested.
-    // For now, let's keep command history separate from chat clear.
+
 }
