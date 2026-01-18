@@ -1,4 +1,4 @@
-import { portfolioData } from '../src/data/portfolio';
+import { portfolioData } from '../src/data/portfolio.js';
 
 export interface KnowledgeEntry {
     id: string;

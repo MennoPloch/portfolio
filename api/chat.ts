@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { knowledgeBase } from './knowledgeBase';
+import { knowledgeBase } from './knowledgeBase.js';
 
 export const config = {
     runtime: 'edge',

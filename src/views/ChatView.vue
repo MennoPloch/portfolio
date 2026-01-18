@@ -384,9 +384,11 @@ onMounted(async () => {
   const interval = setInterval(forceScroll, 50);
   setTimeout(() => clearInterval(interval), 500);
   
-  // Focus input
+  // Focus input ONLY on desktop to prevent keyboard popping up on mobile
   nextTick(() => {
-    inputField.value?.focus();
+    if (window.innerWidth > 768) {
+      inputField.value?.focus();
+    }
   });
 });
 

@@ -34,6 +34,21 @@ onMounted(() => {
 
   let frameCount = 0;
 
+  // Theme detection optimization
+  let isDark = document.documentElement.classList.contains('dark');
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        isDark = document.documentElement.classList.contains('dark');
+      }
+    });
+  });
+  
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
   const draw = () => {
     // Update every 12th frame
     frameCount++;
@@ -42,9 +57,6 @@ onMounted(() => {
       return;
     }
 
-    // Fading trail effect
-    const isDark = document.documentElement.classList.contains('dark');
-    
     // Fade out previous frame
     ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -76,6 +88,7 @@ onMounted(() => {
   onUnmounted(() => {
     window.removeEventListener('resize', resize);
     cancelAnimationFrame(animationId);
+    observer.disconnect();
   });
 });
 </script>
