@@ -40,9 +40,6 @@ onMounted(() => {
     mutations.forEach((mutation) => {
       if (mutation.attributeName === 'class') {
         isDark = document.documentElement.classList.contains('dark');
-        // Instantly clear canvas to prevent color bleeding/lag
-        ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
     });
   });
