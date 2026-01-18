@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 
 const isDark = ref(false)
@@ -29,7 +29,6 @@ const onLeave = () => {
   gsap.to('.theme-icon', { scale: 1, rotation: 0, duration: 0.4, ease: 'power2.out' })
 }
 
-onMounted(() => {
   if (localStorage.theme === 'dark') {
     isDark.value = true
     document.documentElement.classList.add('dark')
@@ -37,6 +36,24 @@ onMounted(() => {
     isDark.value = false
     document.documentElement.classList.remove('dark')
   }
+
+  // Watch for external theme changes (e.g. from ChatView)
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        isDark.value = document.documentElement.classList.contains('dark')
+      }
+    })
+  })
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
+
+  onUnmounted(() => {
+    observer.disconnect()
+  })
 })
 </script>
 
