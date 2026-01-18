@@ -642,7 +642,7 @@ const renderMarkdown = (text: string) => {
         <!-- Chat Container -->
         <div 
           ref="chatContainer"
-          class="flex-1 overflow-y-auto md:overflow-visible w-full px-6 pt-28 pb-4 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
+          class="flex-1 overflow-y-auto md:overflow-visible w-full px-6 pt-28 pb-32 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
         >
           <div class="flex flex-col gap-6 min-h-full justify-end">
             <!-- Spacer to push content down initially if empty -->
@@ -691,7 +691,7 @@ const renderMarkdown = (text: string) => {
         </div>
 
         <!-- Input Area -->
-        <div class="w-full md:fixed md:bottom-0 md:left-0 p-6 pt-12 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
+        <div class="w-full fixed bottom-0 left-0 p-6 pt-20 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
           <div class="max-w-3xl mx-auto relative font-mono">
             
             <!-- Command Suggestions -->
