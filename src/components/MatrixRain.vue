@@ -54,16 +54,18 @@ onMounted(() => {
     ctx.font = `${fontSize}px monospace`;
 
     for (let i = 0; i < drops.length; i++) {
-      const text = charArray[Math.floor(Math.random() * charArray.length)];
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      const text = charArray[Math.floor(Math.random() * charArray.length)] || '';
+      const dropY = drops[i] || 0;
+      
+      ctx.fillText(text, i * fontSize, dropY * fontSize);
 
       // Reset drop to top randomly
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      if (dropY * fontSize > canvas.height && Math.random() > 0.975) {
         drops[i] = 0;
       }
 
       // Increment Y coordinate
-      drops[i]++;
+      drops[i] = (drops[i] || 0) + 1;
     }
     
     animationId = requestAnimationFrame(draw);

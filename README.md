@@ -4,6 +4,7 @@ A modern, interactive portfolio website built with Vue 3, featuring smooth anima
 
 ## Features
 
+- **AI Chatbot**: "Menno_OS" - A multilingual, context-aware AI assistant powered by Gemini & Supabase
 - **Smooth Scroll**: Powered by Lenis for buttery-smooth scrolling experience
 - **Custom Cursor**: Interactive cursor that responds to hover states
 - **GSAP Animations**: Sophisticated entrance animations and scroll-triggered effects
