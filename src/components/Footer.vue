@@ -43,7 +43,7 @@ onMounted(() => {
       </div>
 
       <div class="flex gap-8 justify-center">
-        <a href="https://www.linkedin.com/in/menno-plochaet-17321623b/" target="_blank" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/mennoplochaet/" target="_blank" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all">LinkedIn</a>
 
         <a href="mailto:plochaetm@gmail.com" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all">Email</a>
 
