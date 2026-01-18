@@ -12,6 +12,7 @@ const router = useRouter();
 const userInput = ref('');
 const inputField = ref<HTMLTextAreaElement | null>(null);
 const isMobile = ref(false);
+const isChatScrolled = ref(false);
 
 const updateMobileStatus = () => {
   isMobile.value = window.innerWidth < 768;
@@ -340,6 +341,14 @@ const handleCommand = (input: string): string | null => {
 };
 
 
+
+
+const handleScroll = () => {
+  if (chatContainer.value) {
+    isChatScrolled.value = chatContainer.value.scrollTop > 50;
+  }
+};
+
 onMounted(async () => {
   const greetings = [
     "Hey. I'm Menno's digital twin. Ask me about my projects, skills, or bouldering.",
@@ -643,7 +652,7 @@ const renderMarkdown = (text: string) => {
         
         <!-- Back Button -->
         <div class="absolute top-0 left-0 z-50">
-          <BackButton />
+          <BackButton :is-scrolled="isChatScrolled" />
         </div>
 
         <!-- Matrix Rain Effect -->
@@ -655,6 +664,7 @@ const renderMarkdown = (text: string) => {
         <!-- Chat Container -->
         <div 
           ref="chatContainer"
+          @scroll="handleScroll"
           class="flex-1 overflow-y-auto md:overflow-visible w-full px-6 pt-28 pb-32 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
         >
           <div class="flex flex-col gap-6 min-h-full justify-end">

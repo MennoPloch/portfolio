@@ -6,13 +6,14 @@ const props = defineProps<{
   label?: string
   to?: string
   forcePill?: boolean
+  isScrolled?: boolean
 }>()
 
 const router = useRouter()
-const isScrolled = ref(false)
+const internalIsScrolled = ref(false)
 
 const updateScroll = () => {
-  isScrolled.value = window.scrollY > 50
+  internalIsScrolled.value = window.scrollY > 50
 }
 
 const goBack = () => {
@@ -39,14 +40,14 @@ onUnmounted(() => {
       @click="goBack"
       class="pointer-events-auto inline-flex items-center justify-center transition-all duration-500 ease-out cursor-pointer"
       :class="[
-        isScrolled || forcePill
+        (props.isScrolled ?? internalIsScrolled) || forcePill
           ? 'bg-soft-black text-off-white dark:bg-off-white dark:text-soft-black px-6 py-2 rounded-full shadow-lg' 
           : 'text-soft-black dark:text-off-white opacity-60 hover:opacity-100 mix-blend-difference'
       ]"
     >
       <span class="font-mono text-sm uppercase tracking-widest flex items-center gap-2">
-        <span v-if="!(isScrolled || forcePill)" class="text-lg leading-none -mt-[2px]">←</span>
-        <span>{{ (isScrolled || forcePill) ? 'Back' : (label || 'Back') }}</span>
+        <span v-if="!((props.isScrolled ?? internalIsScrolled) || forcePill)" class="text-lg leading-none -mt-[2px]">←</span>
+        <span>{{ ((props.isScrolled ?? internalIsScrolled) || forcePill) ? 'Back' : (label || 'Back') }}</span>
       </span>
     </button>
   </div>
