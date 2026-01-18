@@ -96,6 +96,11 @@ const handleInput = () => {
   
   showSuggestions.value = userInput.value.startsWith('/') && filteredCommands.value.length > 0;
   suggestionIndex.value = 0; // Reset selection on input
+
+  // Scroll to bottom when typing starts to keep context visible above keyboard
+  if (userInput.value.length === 1) {
+    scrollToBottom();
+  }
 };
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -665,7 +670,7 @@ const renderMarkdown = (text: string) => {
         <div 
           ref="chatContainer"
           @scroll="handleScroll"
-          class="flex-1 overflow-y-auto md:overflow-visible w-full px-6 pt-28 pb-32 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
+          class="flex-1 overflow-y-auto md:overflow-visible w-full px-6 pt-28 pb-40 md:px-20 lg:px-40 font-mono max-w-5xl mx-auto overscroll-contain scroll-smooth"
         >
           <div class="flex flex-col gap-6 min-h-full justify-end">
             <!-- Spacer to push content down initially if empty -->
