@@ -315,9 +315,6 @@ const handleCommand = (input: string): string | null => {
     case '/brew':
       return `☕ Brewing... Actually, I prefer tea!`;
 
-    case '/matrix':
-      return `Wake up, Neo... 💊`;
-
     case '/vim':
       return `How do I exit?! Just kidding. Use \`/clear\` to start fresh.`;
 

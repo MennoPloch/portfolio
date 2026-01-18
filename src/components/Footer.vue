@@ -48,7 +48,7 @@ onMounted(() => {
         <a href="mailto:plochaetm@gmail.com" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all">Email</a>
 
         <router-link to="/chat" class="font-mono text-sm uppercase tracking-widest hover:font-bold transition-all flex items-center gap-2">
-          <span>Talk to AI</span>
+          <span>Ask Menno_OS</span>
           <span class="w-1.5 h-3 bg-current animate-pulse"></span>
         </router-link>
       </div>
