@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -13,6 +13,68 @@ const cursorX = ref(0)
 const cursorY = ref(0)
 const isHovering = ref(false)
 
+const FIXED_HEIGHT = 220 // Fixed height for all preview images
+
+// Cache for preloaded image dimensions
+const imageDimensions = new Map<string, { width: number; height: number }>()
+
+// Preload all project images and cache their dimensions
+const preloadImages = () => {
+  portfolioData.projects.forEach(project => {
+    if (project.image) {
+      const img = new Image()
+      img.onload = () => {
+        imageDimensions.set(project.image!, {
+          width: img.naturalWidth,
+          height: img.naturalHeight
+        })
+      }
+      img.src = project.image
+    }
+  })
+}
+
+// Check which project is under the cursor (for scroll detection)
+const checkHoveredProject = () => {
+  if (window.matchMedia('(hover: none)').matches) return
+  if (cursorX.value === 0 && cursorY.value === 0) return
+
+  const element = document.elementFromPoint(cursorX.value, cursorY.value)
+  if (!element) return
+
+  const projectItem = element.closest('.project-item')
+  if (projectItem) {
+    const projectId = projectItem.getAttribute('data-project-id')
+    const project = portfolioData.projects.find(p => String(p.id) === projectId)
+    if (project && project.image && activeImage.value !== project.image) {
+      setActiveImage(project.image)
+    }
+  }
+}
+
+const setActiveImage = (image: string) => {
+  activeImage.value = image
+  isHovering.value = true
+
+  // Calculate target width based on cached dimensions
+  const dims = imageDimensions.get(image)
+  let targetWidth = FIXED_HEIGHT * 1.5 // Default aspect ratio fallback
+  
+  if (dims) {
+    const aspectRatio = dims.width / dims.height
+    targetWidth = FIXED_HEIGHT * aspectRatio
+  }
+
+  // Animate the container to show AND resize smoothly
+  gsap.to('.project-media', {
+    width: targetWidth,
+    scale: 1,
+    opacity: 1,
+    duration: 0.4,
+    ease: 'power2.out'
+  })
+}
+
 const onMouseMove = (e: MouseEvent) => {
   if (window.matchMedia('(hover: none)').matches) return
 
@@ -20,8 +82,10 @@ const onMouseMove = (e: MouseEvent) => {
   cursorY.value = e.clientY
   
   gsap.to('.project-media', {
-    x: e.clientX,
-    y: e.clientY,
+    left: e.clientX,
+    top: e.clientY,
+    xPercent: -50,
+    yPercent: -50,
     duration: 0.5,
     ease: 'power2.out'
   })
@@ -29,14 +93,7 @@ const onMouseMove = (e: MouseEvent) => {
 
 const onMouseEnter = (image: string) => {
   if (window.matchMedia('(hover: none)').matches) return
-
-  activeImage.value = image
-  isHovering.value = true
-  gsap.to('.project-media', {
-    scale: 1,
-    opacity: 1,
-    duration: 0.3
-  })
+  setActiveImage(image)
 }
 
 const onMouseLeave = () => {
@@ -44,15 +101,38 @@ const onMouseLeave = () => {
   gsap.to('.project-media', {
     scale: 0.8,
     opacity: 0,
-    duration: 0.3
+    duration: 0.3,
+    onComplete: () => {
+      // Clear the image after fade-out to prevent stale renders
+      if (!isHovering.value) {
+        activeImage.value = null
+      }
+    }
   })
+}
+
+// Also hide when leaving the entire section
+const onSectionLeave = () => {
+  isHovering.value = false
+  activeImage.value = null
+  gsap.set('.project-media', { opacity: 0, scale: 0.8 })
 }
 
 const navigateToProject = (slug: string) => {
   router.push('/project/' + slug)
 }
 
+// Scroll handler to update hovered project
+const handleScroll = () => {
+  if (isHovering.value) {
+    checkHoveredProject()
+  }
+}
+
 onMounted(() => {
+  preloadImages()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  
   const items = document.querySelectorAll('.project-item')
   
   items.forEach((item) => {
@@ -73,19 +153,24 @@ onMounted(() => {
     )
   })
 })
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
-  <section class="py-32 px-4 md:px-12 lg:px-24 min-h-screen relative" @mousemove="onMouseMove">
+  <section class="py-32 px-4 md:px-12 lg:px-24 min-h-screen relative" @mousemove="onMouseMove" @mouseleave="onSectionLeave">
     <h2 class="font-display text-4xl md:text-6xl font-bold mb-16 uppercase border-b border-soft-black dark:border-off-white pb-4">
       Selected Works
     </h2>
 
-    <div class="space-y-8 project-list-container">
+    <div class="project-list-container">
       <div 
         v-for="project in portfolioData.projects" 
         :key="project.id"
-        class="project-item group relative flex flex-col 2xl:flex-row 2xl:items-center justify-between py-8 border-b border-soft-black/10 dark:border-off-white/10 transition-opacity duration-300 hide-cursor cursor-none"
+        class="project-item group relative flex flex-col 2xl:flex-row 2xl:items-center justify-between py-10 border-b border-soft-black/10 dark:border-off-white/10 transition-opacity duration-300 hide-cursor cursor-none"
+        :data-project-id="project.id"
         @mouseenter="onMouseEnter(project.image || '')"
         @mouseleave="onMouseLeave"
         @click="navigateToProject(project.slug)"
@@ -119,12 +204,14 @@ onMounted(() => {
 
     <!-- Floating Image Reveal -->
     <div 
-      class="project-media fixed top-0 left-0 h-[220px] w-auto pointer-events-none z-50 opacity-0 scale-75 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg bg-soft-black shadow-2xl border border-transparent dark:border-off-white/10"
+      v-show="isHovering || activeImage"
+      class="project-media fixed pointer-events-none z-50 opacity-0 scale-75 overflow-hidden rounded-lg shadow-2xl"
+      style="height: 220px;"
     >
       <img 
         v-if="activeImage" 
         :src="activeImage" 
-        class="h-full w-auto object-contain opacity-90"
+        class="h-full w-full object-cover rounded-lg"
         alt="Project Preview"
       />
     </div>
@@ -134,5 +221,10 @@ onMounted(() => {
 <style scoped>
 .project-media {
   will-change: transform, opacity;
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.project-media img {
+  will-change: auto;
 }
 </style>

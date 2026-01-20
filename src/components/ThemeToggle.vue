@@ -63,7 +63,7 @@ onMounted(() => {
     @click="toggleTheme" 
     @mouseenter="onEnter"
     @mouseleave="onLeave"
-    class="fixed top-8 right-8 z-50 p-4 rounded-full bg-soft-black dark:bg-off-white text-off-white dark:text-soft-black transition-colors duration-300"
+    class="fixed top-8 right-8 z-50 p-4 rounded-full bg-soft-black dark:bg-off-white text-off-white dark:text-soft-black transition-colors duration-300 cursor-pointer"
     aria-label="Toggle Theme"
   >
     <div class="theme-icon w-6 h-6 flex items-center justify-center relative">

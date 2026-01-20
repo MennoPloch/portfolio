@@ -18,6 +18,14 @@ const updateMobileStatus = () => {
   isMobile.value = window.innerWidth < 768;
 };
 
+const handleWindowScroll = () => {
+  if (!isMobile.value) {
+    isChatScrolled.value = window.scrollY > 50;
+  }
+};
+
+
+
 const pendingAction = ref<{ type: 'theme_switch', targetMode: 'dark' | 'light' } | null>(null);
 
 
@@ -27,7 +35,7 @@ const coreCommands = [
 ];
 const easterEggs = [
   '/sudo', '/rm -rf', '/ping', '/coffee', '/brew', 
-  '/matrix', '/vim', '/git'
+  '/matrix', '/vim'
 ];
 const allCommands = [...coreCommands, ...easterEggs];
 
@@ -343,9 +351,6 @@ const handleCommand = (input: string): string | null => {
     case '/vim':
       return `How do I exit?! Just kidding. Use \`/clear\` to start fresh.`;
 
-    case '/git':
-      return `git: command requires more arguments`;
-
     default:
       // Check if it starts with / but isn't recognized
       if (cmd && cmd.startsWith('/')) {
@@ -379,7 +384,9 @@ onMounted(async () => {
   ];
 
   updateMobileStatus();
+  updateMobileStatus();
   window.addEventListener('resize', updateMobileStatus);
+  window.addEventListener('scroll', handleWindowScroll);
 
   const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
   
@@ -431,6 +438,7 @@ onUnmounted(() => {
     history.scrollRestoration = 'auto';
   }
   window.removeEventListener('resize', updateMobileStatus);
+  window.removeEventListener('scroll', handleWindowScroll);
 });
 
 const chatContainer = ref<HTMLElement | null>(null);
@@ -656,13 +664,18 @@ const handleMessageClick = (event: MouseEvent) => {
 };
 
 const renderMarkdown = (text: string) => {
-  let html = marked(text) as string;
+  let markdown = text;
+
+  let html = marked(markdown) as string;
   
   // Add color swatches for hex codes
   html = html.replace(/(#[0-9A-Fa-f]{6})/g, '<span style="background-color: $1" data-hex="$1" class="color-swatch inline-block w-5 h-5 rounded-md mr-2 align-text-bottom border border-black/10 dark:border-white/10 shadow-sm hover:scale-110 transition-transform cursor-pointer" title="Click to copy"></span>$1');
   
-  // Style internal links to be clearly blue and clickable
+  // Style internal links (starting with /)
   html = html.replace(/<a href="(\/[^"]+)">/g, '<a href="$1" class="text-blue-500 dark:text-blue-400 font-semibold underline underline-offset-4 decoration-2 hover:text-blue-600 dark:hover:text-blue-300 cursor-pointer transition-colors">');
+
+  // Style external links (starting with http) - Add target="_blank" and icon
+  html = html.replace(/<a href="(http[^"]+)">/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 font-semibold underline underline-offset-4 decoration-2 hover:text-blue-600 dark:hover:text-blue-300 cursor-pointer transition-colors inline-flex items-center gap-1">');
   
   return html;
 };
@@ -741,10 +754,10 @@ const renderMarkdown = (text: string) => {
             <!-- Command Suggestions -->
             <div 
               v-if="showSuggestions"
-              class="absolute bottom-full left-0 mb-4 w-full bg-white/80 dark:bg-soft-black/80 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-lg shadow-lg overflow-hidden z-50"
+              class="absolute bottom-full left-0 mb-4 w-full bg-white/80 dark:bg-soft-black/80 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-lg shadow-lg overflow-hidden z-50 max-h-[40vh] overflow-y-auto"
             >
               <div 
-                v-for="(cmd, index) in filteredCommands" 
+                v-for="(cmd, index) in filteredCommands.slice(0, isMobile ? 5 : 10)" 
                 :key="cmd"
                 class="px-4 py-2 cursor-pointer transition-colors duration-200 flex items-center justify-between"
                 :class="{ 'bg-black/5 dark:bg-white/10': index === suggestionIndex }"

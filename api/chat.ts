@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { knowledgeBase } from './knowledgeBase.js';
 
@@ -32,7 +33,7 @@ Proudest project: [MyCLOUDMEN](/project/mycloudmen).
 | Rule | Format |
 |------|--------|
 | **Projects** | ALWAYS link: \`[ProjectName](/project/slug)\`. Never mention a project without linking. |
-| **Links** | "CLOUDMEN" → ALWAYS link as \`[CLOUDMEN](https://cloudmen.com/)\`. |
+| **Links** | "CLOUDMEN" → \`[CLOUDMEN](https://cloudmen.eu)\`. "AP Hogeschool" or "ap.be" → \`[AP Hogeschool](https://www.ap.be)\`. |
 | **Colors** | Always include hex: \`**Deep Space Blue** (#002642)\` |
 | **Length** | MAX 2-3 sentences (simple) / 4-5 (complex). NO WALLS OF TEXT. |
 | **Portfolio** | "This website" = the portfolio you're on right now! |

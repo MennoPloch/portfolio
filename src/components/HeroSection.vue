@@ -101,14 +101,29 @@ onMounted(() => {
   <section class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden py-20">
     <div ref="heroText" class="text-center leading-[0.8] select-none text-soft-black dark:text-off-white relative z-10">
       <h1 class="font-display text-[12vw] md:text-[14vw] font-bold uppercase tracking-tighter" aria-label="Menno Plochaet">
-        <div class="overflow-hidden" aria-hidden="true"><span class="char inline-block">M</span><span class="char inline-block">e</span><span class="char inline-block">n</span><span class="char inline-block">n</span><span class="char inline-block">o</span></div>
-        <div class="overflow-hidden" aria-hidden="true"><span class="char inline-block">P</span><span class="char inline-block">l</span><span class="char inline-block">o</span><span class="char inline-block">c</span><span class="char inline-block">h</span><span class="char inline-block">a</span><span class="char inline-block">e</span><span class="char inline-block">t</span></div>
+        <div class="overflow-hidden" aria-hidden="true">
+          <span class="char inline-block">M</span>
+          <span class="char inline-block">e</span>
+          <span class="char inline-block">n</span>
+          <span class="char inline-block">n</span>
+          <span class="char inline-block">o</span>
+        </div>
+        <div class="overflow-hidden" aria-hidden="true">
+          <span class="char inline-block">P</span>
+          <span class="char inline-block">l</span>
+          <span class="char inline-block">o</span>
+          <span class="char inline-block">c</span>
+          <span class="char inline-block">h</span>
+          <span class="char inline-block">a</span>
+          <span class="char inline-block">e</span>
+          <span class="char inline-block">t</span>
+        </div>
       </h1>
     </div>
       
-    <div ref="backgroundLogo" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[1000px] z-0 pointer-events-none opacity-10 dark:opacity-5">
-      <div ref="parallaxLayer" class="w-full h-full">
-        <svg viewBox="0 0 100 78" fill="none" class="w-full h-full text-gray-200 dark:text-[#2A2A2A]">
+    <div ref="backgroundLogo" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none opacity-10 dark:opacity-5 flex items-center justify-center" style="width: min(90vw, 1000px); height: min(70vh, 780px);">
+      <div ref="parallaxLayer" class="w-full h-full flex items-center justify-center">
+        <svg viewBox="0 0 100 78" fill="none" preserveAspectRatio="xMidYMid meet" class="max-w-full max-h-full text-gray-200 dark:text-[#2A2A2A]">
           <path d="M56.4498 78H45.1401C42.5325 78 40.6221 75.5451 41.2627 73.0174L54.6667 20.1261C55.6834 16.1143 61.3774 16.0987 62.4161 20.1049L65.3107 31.27C65.4358 31.7524 65.4696 32.2539 65.4105 32.7488L60.4215 74.4749C60.181 76.486 58.4752 78 56.4498 78Z" fill="currentColor"/>
           <path d="M14.2053 19.2059L1.19342 73.0606C0.585325 75.5774 2.4923 78 5.08154 78H16.654C18.5906 78 20.249 76.6127 20.5911 74.7067L26.8472 39.8513C26.9479 39.2902 26.9275 38.7142 26.7875 38.1616L21.9707 19.1624C20.945 15.1163 15.1856 15.1487 14.2053 19.2059Z" fill="currentColor"/>
           <path d="M80.7709 3.0065C80.3172 1.23724 78.7227 0 76.8962 0H65.155C62.5428 0 60.6316 2.46312 61.2804 4.9935L79.2291 74.9935C79.6828 76.7628 81.2773 78 83.1038 78H94.845C97.4572 78 99.3684 75.5369 98.7196 73.0065L80.7709 3.0065Z" fill="currentColor"/>

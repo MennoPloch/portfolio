@@ -28,58 +28,50 @@ const router = createRouter({
             component: () => import('../views/ChatView.vue')
         }
     ],
-    scrollBehavior(to, _from, savedPosition) {
-        const lenis = getLenis()
+    scrollBehavior(_to, _from, savedPosition) {
+        return new Promise((resolve) => {
+            const lenis = getLenis()
 
-        // Always scroll to top on initial navigation or route change
-        if (to.name === 'home' && !savedPosition) {
-            if (lenis) {
-                lenis.scrollTo(0, { immediate: true })
-            } else {
-                window.scrollTo(0, 0)
-            }
-            return { top: 0 }
-        }
-
-        // If navigating to a detail page, ALWAYS start at top
-        if (to.meta.isDetail) {
-            if (lenis) {
-                lenis.scrollTo(0, { immediate: true })
-            } else {
-                window.scrollTo(0, 0)
-            }
-            return { top: 0 }
-        }
-
-        // If we have a saved position (e.g. clicking back button), restore it
-        if (savedPosition) {
-            if (lenis) {
-                lenis.scrollTo(savedPosition.top, { immediate: true })
-            }
-            return savedPosition
-        }
-
-        // Otherwise, scroll to top
-        if (lenis) {
-            lenis.scrollTo(0, { immediate: true })
-        }
-        return { top: 0 }
+            // Wait for fast transition (200ms) to finish
+            setTimeout(() => {
+                if (savedPosition) {
+                    if (lenis) {
+                        lenis.scrollTo(savedPosition.top, { immediate: true })
+                    }
+                    resolve(savedPosition)
+                } else {
+                    if (lenis) {
+                        lenis.scrollTo(0, { immediate: true })
+                    } else {
+                        window.scrollTo(0, 0)
+                    }
+                    resolve({ top: 0 })
+                }
+            }, 250) // 250ms delay matches transition time + buffer
+        })
     }
 })
+
 
 import { useAnalytics } from '../composables/useAnalytics'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const { logPageView } = useAnalytics()
 
+// Prevent browser from restoring scroll position automatically
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'
+}
+
 router.afterEach((to) => {
     logPageView(to.fullPath)
 
     // Refresh ScrollTrigger to recalculate positions after navigation
     // This prevents scroll jumps when returning from detail pages
+    // Wait for transition (300ms) + scroll restoration (400ms) + buffer
     setTimeout(() => {
         ScrollTrigger.refresh()
-    }, 100)
+    }, 800)
 })
 
 export default router

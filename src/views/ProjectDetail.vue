@@ -176,12 +176,19 @@ const handleSwipe = () => {
 }
 
 const isScrolled = ref(false)
+const scrollProgress = ref(0)
 const isMobile = ref(false)
 const currentCarouselIndex = ref(0)
 const carouselRef = ref<HTMLElement | null>(null)
 
 const updateScroll = () => {
-  isScrolled.value = window.scrollY > 100
+  isScrolled.value = window.scrollY > 50
+  
+  // Calculate scroll progress
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
+  const scrolled = (winScroll / height) * 100
+  scrollProgress.value = scrolled
 }
 
 const checkMobile = () => {
@@ -204,6 +211,10 @@ const scrollToCarouselItem = (index: number) => {
     })
   }
 }
+
+
+
+
 
 const openLightboxWithItem = (index: number) => {
   setActiveMedia(index)
@@ -250,7 +261,10 @@ onUnmounted(() => {
   <div class="min-h-screen bg-off-white dark:bg-soft-black transition-colors duration-500">
     
     <!-- Navigation -->
-    <BackButton />
+    <BackButton :is-scrolled="isScrolled" />
+
+    <!-- Scroll Progress Bar -->
+    <div class="fixed top-0 left-0 h-1 bg-accent-blue z-50 transition-all duration-100 ease-out" :style="{ width: scrollProgress + '%' }"></div>
 
     <div v-if="project" class="pb-24">
       
@@ -258,8 +272,8 @@ onUnmounted(() => {
       <div class="relative min-h-[40vh] md:min-h-[50vh] flex flex-col justify-end p-4 md:p-12 lg:p-24 project-header">
         <div class="max-w-4xl space-y-6">
           <div class="flex flex-wrap gap-2 md:gap-4 mb-4">
-            <span v-for="tag in project.tags" :key="tag" class="px-3 py-1 rounded-full border border-soft-black/20 dark:border-off-white/20 font-mono text-xs uppercase tracking-wider bg-off-white/50 dark:bg-soft-black/50 backdrop-blur-sm">
-              {{ tag }}
+            <span v-for="tag in project.tags" :key="tag" class="px-2 py-1 rounded-sm border border-soft-black/20 dark:border-off-white/20 font-mono text-xs uppercase tracking-wider text-soft-black/70 dark:text-off-white/70 bg-transparent">
+              #{{ tag }}
             </span>
           </div>
           <h1 class="font-display text-[10vw] md:text-8xl font-bold uppercase leading-[0.9] text-soft-black dark:text-off-white break-words hyphens-auto">
@@ -328,8 +342,12 @@ onUnmounted(() => {
           </div>
 
           <!-- Desktop: Thumbnail Strip -->
-          <div v-if="mediaItems.length > 1 && !isMobile" class="hidden md:block relative">
-            <div class="flex overflow-x-auto gap-4 p-4 snap-x scrollbar-hide mask-linear-fade">
+          <div 
+            v-if="mediaItems.length > 1 && !isMobile" 
+            ref="thumbnailStrip"
+            class="hidden md:block relative max-w-full overflow-x-auto thumbnail-scroll"
+          >
+            <div class="flex gap-4 p-4 w-max">
               <button
                 v-for="(item, index) in mediaItems"
                 :key="index"
@@ -557,5 +575,48 @@ onUnmounted(() => {
 .slide-prev-leave-to {
   transform: translateX(50px);
   opacity: 0;
+}
+
+/* Thumbnail scroll - show scrollbar */
+.thumbnail-scroll {
+  scroll-behavior: smooth;
+  scrollbar-width: auto;
+  scrollbar-color: rgba(100, 100, 100, 0.6) transparent;
+}
+
+.thumbnail-scroll::-webkit-scrollbar {
+  height: 12px;
+}
+
+.thumbnail-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+.thumbnail-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.thumbnail-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+:root.dark .thumbnail-scroll {
+  scrollbar-color: rgba(200, 200, 200, 0.5) transparent;
+}
+
+:root.dark .thumbnail-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:root.dark .thumbnail-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+:root.dark .thumbnail-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
 }
 </style>
