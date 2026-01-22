@@ -102,30 +102,31 @@ export default async function handler(request: Request) {
         let text = response.text();
 
 
+        // Determine status and clean text
+        let status = 'known';
         if (text.includes('[MISSING_INFO]')) {
-
-            const supabaseUrl = process.env.VITE_SUPABASE_URL;
-            const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
-
-            if (supabaseUrl && supabaseKey) {
-
-                const { createClient } = await import('@supabase/supabase-js');
-                const supabase = createClient(supabaseUrl, supabaseKey);
-
-
-                try {
-                    const { error } = await supabase.from('ai_learning_logs').insert({
-                        question: message
-                    });
-
-                    if (error) console.error('Supabase Error:', error);
-                } catch (err) {
-                    console.error('Unexpected Supabase Error:', err);
-                }
-            }
-
-
+            status = 'unknown';
             text = text.replace('[MISSING_INFO]', '').trim();
+        }
+
+        // Log to Supabase (All requests)
+        const supabaseUrl = process.env.VITE_SUPABASE_URL;
+        const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+        if (supabaseUrl && supabaseKey) {
+            const { createClient } = await import('@supabase/supabase-js');
+            const supabase = createClient(supabaseUrl, supabaseKey);
+
+            try {
+                const { error } = await supabase.from('ai_learning_logs').insert({
+                    question: message,
+                    status: status
+                });
+
+                if (error) console.error('Supabase Error:', error);
+            } catch (err) {
+                console.error('Unexpected Supabase Error:', err);
+            }
         }
 
         return new Response(JSON.stringify({ response: text }), {

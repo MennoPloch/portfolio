@@ -81,7 +81,7 @@ export const portfolioData = {
             longDescription: "This is my personal playground. I wanted to build something that felt premium but also fun. It's built with Vue 3 and uses GSAP for all the heavy lifting on animations. The chat isn't just a gimmick—it's a fully functional 'digital twin' that can answer questions about me.",
             role: "Solo Full Stack Developer",
             year: "Nov 2025 - Present",
-            tags: ["Vue 3", "TypeScript", "GSAP", "Tailwind", "Gemini AI"],
+            tags: ["Vue 3", "TypeScript", "GSAP", "Tailwind", "Gemini API"],
             image: "/images/Portfolio/Landing.webp",
             gallery: []
         },
