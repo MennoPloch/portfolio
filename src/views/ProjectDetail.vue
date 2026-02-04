@@ -221,6 +221,91 @@ const openLightboxWithItem = (index: number) => {
   openLightbox()
 }
 
+// Horizontal Scroll Logic
+const thumbnailStrip = ref<HTMLElement | null>(null)
+const mouseX = ref(0)
+const isHoveringStrip = ref(false)
+
+const handleWheel = (e: WheelEvent) => {
+  if (thumbnailStrip.value) {
+    // Explicitly prevent default to stop vertical scrolling
+    e.preventDefault()
+    e.stopPropagation()
+    thumbnailStrip.value.scrollLeft += e.deltaY
+  }
+}
+
+
+
+// Dock Effect Logic
+const handleStripMouseMove = (e: MouseEvent) => {
+  isHoveringStrip.value = true
+  mouseX.value = e.clientX
+}
+
+const handleStripMouseLeave = () => {
+  isHoveringStrip.value = false
+}
+
+const getItemDimensions = (index: number) => {
+  const baseWidth = 160
+  const baseHeight = 96
+  
+  if (!isHoveringStrip.value || !thumbnailStrip.value) {
+    return { width: baseWidth, height: baseHeight }
+  }
+  
+  const stripRect = thumbnailStrip.value.getBoundingClientRect()
+  const scrollLeft = thumbnailStrip.value.scrollLeft
+  const containerWidth = stripRect.width
+  
+  // Constants
+  const gap = 16
+  const paddingX = 64 // 48px container padding + 16px inner padding
+  const itemStride = baseWidth + gap
+  const itemCenterOffset = baseWidth / 2
+  
+  // Check if content fits (use base dimensions to be stable)
+  const totalContentWidth = (mediaItems.value.length * itemStride) - gap
+  const availableWidth = containerWidth - (paddingX * 2)
+  const isOverflowing = totalContentWidth > availableWidth
+  
+  let itemCenterViewport
+  
+  if (isOverflowing) {
+    // Left-aligned (standard scroll)
+    const startOffset = paddingX
+    const itemCenterRelative = startOffset + (index * itemStride) + itemCenterOffset
+    itemCenterViewport = stripRect.left + itemCenterRelative - scrollLeft
+  } else {
+    // Right-aligned (due to ml-auto)
+    // Calculate from the right edge
+    const endOffset = paddingX
+    // Index from the end (0 = last item)
+    const indexFromEnd = mediaItems.value.length - 1 - index
+    const itemCenterFromRight = endOffset + (indexFromEnd * itemStride) + itemCenterOffset
+    itemCenterViewport = stripRect.right - itemCenterFromRight
+  }
+  
+  const distance = Math.abs(mouseX.value - itemCenterViewport)
+  
+  // Parameters
+  const sigma = 150 // Spread
+  const shrunkWidth = 140
+  const shrunkHeight = 84
+  const maxWidth = 180
+  const maxHeight = 108
+  
+  // Gaussian factor (0 to 1)
+  const factor = Math.exp(-(distance * distance) / (2 * sigma * sigma))
+  
+  // Interpolate
+  const width = shrunkWidth + (maxWidth - shrunkWidth) * factor
+  const height = shrunkHeight + (maxHeight - shrunkHeight) * factor
+  
+  return { width, height }
+}
+
 onMounted(() => {
   window.addEventListener('scroll', updateScroll)
   window.addEventListener('resize', checkMobile)
@@ -342,45 +427,58 @@ onUnmounted(() => {
           </div>
 
           <!-- Desktop: Thumbnail Strip -->
-          <div 
-            v-if="mediaItems.length > 1 && !isMobile" 
-            ref="thumbnailStrip"
-            class="hidden md:block relative max-w-full overflow-x-auto thumbnail-scroll"
-          >
-            <div class="flex gap-4 p-4 w-max">
-              <button
-                v-for="(item, index) in mediaItems"
-                :key="index"
-                @click="setActiveMedia(index)"
-                class="relative flex-shrink-0 w-32 h-20 md:w-40 md:h-24 rounded-md overflow-hidden border-2 transition-all duration-300 snap-start group"
-                :class="[
-                  index === activeMediaIndex 
-                    ? 'border-accent-blue scale-105 opacity-100 ring-2 ring-accent-blue/20' 
-                    : 'border-transparent opacity-60 hover:opacity-100 hover:scale-105'
-                ]"
+          <div v-if="mediaItems.length > 1 && !isMobile" class="hidden md:flex items-center justify-end relative w-full h-48 pr-12">
+            
+            <div 
+              ref="thumbnailStrip"
+              class="relative max-w-full overflow-x-auto thumbnail-scroll flex-1 py-4 h-full flex items-center overscroll-contain"
+              @wheel.prevent.stop="handleWheel"
+            >
+              <div 
+                class="flex gap-4 w-max items-center px-4 ml-auto"
+                @mousemove="handleStripMouseMove"
+                @mouseleave="handleStripMouseLeave"
               >
-                <video
-                  v-if="item.type === 'video'"
-                  :src="item.src"
-                  class="w-full h-full object-cover"
-                  muted
-                  preload="metadata"
-                ></video>
-                <img 
-                  v-else
-                  :src="getThumbnailPath(item.src)" 
-                  class="w-full h-full object-cover"
-                  loading="lazy"
-                  alt="Thumbnail"
-                />
-                
-                <!-- Video Indicator Icon -->
-                <div v-if="item.type === 'video'" class="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div class="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center">
-                    <div class="w-0 h-0 border-t-[4px] border-t-transparent border-l-[8px] border-l-black border-b-[4px] border-b-transparent ml-0.5"></div>
+                <button
+                  v-for="(item, index) in mediaItems"
+                  :key="index"
+                  :ref="(el) => { if (el) (el as HTMLElement).dataset.index = index.toString() }"
+                  @click="setActiveMedia(index)"
+                  class="relative flex-shrink-0 rounded-md overflow-hidden border-2 transition-all duration-300 ease-out origin-bottom will-change-transform"
+                  :style="{
+                    width: `${getItemDimensions(index).width}px`,
+                    height: `${getItemDimensions(index).height}px`,
+                    zIndex: isHoveringStrip ? 10 : 1
+                  }"
+                  :class="[
+                    index === activeMediaIndex 
+                      ? 'border-accent-blue opacity-100 ring-2 ring-accent-blue/20' 
+                      : 'border-transparent opacity-60 hover:opacity-100'
+                  ]"
+                >
+                  <video
+                    v-if="item.type === 'video'"
+                    :src="item.src"
+                    class="w-full h-full object-cover"
+                    muted
+                    preload="metadata"
+                  ></video>
+                  <img 
+                    v-else
+                    :src="getThumbnailPath(item.src)" 
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    alt="Thumbnail"
+                  />
+                  
+                  <!-- Video Indicator Icon -->
+                  <div v-if="item.type === 'video'" class="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <div class="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center">
+                      <div class="w-0 h-0 border-t-[4px] border-t-transparent border-l-[8px] border-l-black border-b-[4px] border-b-transparent ml-0.5"></div>
+                    </div>
                   </div>
-                </div>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -396,6 +494,7 @@ onUnmounted(() => {
                   v-for="(item, index) in mediaItems" 
                   :key="index"
                   class="w-full h-full flex-shrink-0 snap-center flex items-center justify-center relative"
+                  style="scroll-snap-stop: always"
                   @click="openLightboxWithItem(index)"
                 >
                   <video
@@ -577,46 +676,14 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* Thumbnail scroll - show scrollbar */
+/* Thumbnail scroll - hide scrollbar but allow scroll */
 .thumbnail-scroll {
   scroll-behavior: smooth;
-  scrollbar-width: auto;
-  scrollbar-color: rgba(100, 100, 100, 0.6) transparent;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
 .thumbnail-scroll::-webkit-scrollbar {
-  height: 12px;
-}
-
-.thumbnail-scroll::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 6px;
-}
-
-.thumbnail-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-.thumbnail-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-:root.dark .thumbnail-scroll {
-  scrollbar-color: rgba(200, 200, 200, 0.5) transparent;
-}
-
-:root.dark .thumbnail-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-:root.dark .thumbnail-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-:root.dark .thumbnail-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  display: none; /* Chrome/Safari */
 }
 </style>
