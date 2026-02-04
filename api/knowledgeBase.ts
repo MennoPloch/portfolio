@@ -43,7 +43,7 @@ export const knowledgeBase: KnowledgeEntry[] = [
     {
         id: 'setup',
         keywords: ['setup', 'pc', 'computer', 'specs', 'hardware', 'monitor', 'keyboard', 'mouse', 'ryzen', 'rtx', 'gpu', 'cpu'],
-        content: "PC Setup: Custom SFF (Small Form Factor) build.\nCPU: Ryzen 5 7600x\nGPU: RTX 2060 Super\nRAM: 32GB\nDisplays: Dual monitor setup."
+        content: "PC Setup: Custom SFF (Small Form Factor) build. I love building computers—for myself and for others. I also built my own custom mechanical keyboard.\n\nAesthetics: I'm obsessed with cable management. I want everything to look as clean and minimal as possible.\n\nSpecs:\nCPU: Ryzen 5 7600x\nGPU: RTX 2060 Super\nRAM: 32GB\nDisplays: Dual monitor setup."
     },
     {
         id: 'favorites',
@@ -55,8 +55,8 @@ export const knowledgeBase: KnowledgeEntry[] = [
 - **Food**: Italian cuisine
 - **Drink**: Tea (over coffee!)
 - **Browser**: recently switched to the Zen Browser Im really digging it so far!
-- **OS**: Android, Microsoft Windows (mainly)
-- **Theme**: Mostly dark mode, when 
+- **OS**: Android, Windows (mainly)
+- **Theme**: Mostly dark mode, when I'm trying to focus I use light mode.
 - **Animals**: Cats`
     },
 
@@ -145,11 +145,7 @@ export const knowledgeBase: KnowledgeEntry[] = [
         keywords: ['challenge', 'uitdaging', 'difficult', 'moeilijk', 'hard', 'struggle', 'overcome', 'growth', 'learn from', 'biggest challenge'],
         content: "Biggest Challenge: My internship at CLOUDMEN. I had to do everything solo, which was tough. Not just technically, but socially too. I love sharing wins and being stuck together with a team keeps my drive high. But doing it alone taught me so much about building something from start to finish. It made me a way more complete developer."
     },
-    {
-        id: 'notice_period',
-        keywords: ['notice', 'opzegtermijn', 'when can you start', 'wanneer beschikbaar', 'start date', 'immediately', 'direct'],
-        content: "Notice Period: Zero! I'm available immediately. No current job to wrap up, so I can start as soon as we agree on a fit."
-    }
+
 ];
 
 // --- DYNAMIC PROJECTS ---
