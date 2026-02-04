@@ -31,7 +31,7 @@ const pendingAction = ref<{ type: 'theme_switch', targetMode: 'dark' | 'light' }
 
 const coreCommands = [
   '/help', '/ls', '/projects', '/cd', '/clear', '/whoami', 
-  '/pwd', '/about', '/theme', '/exit'
+  '/about', '/theme', '/exit'
 ];
 const easterEggs = [
   '/sudo', '/rm -rf', '/ping', '/coffee', '/brew', 
@@ -79,9 +79,14 @@ const filteredCommands = computed(() => {
       .map(p => `/cd ${p.slug}`);
   }
 
-  // If typing "/theme" or "/theme ", show theme options
+    // If typing "/theme" or "/theme ", show theme options
   if (input === '/theme' || input.startsWith('/theme ')) {
-    const options = ['/theme dark', '/theme light'];
+    const options = [
+      '/theme dark', 
+      '/theme light', 
+      '/theme retro', 
+      '/theme default'
+    ];
     const search = input.replace('/theme ', '').replace('/theme', '').trim();
     if (!search) return options;
     return options.filter(opt => opt.includes(search));
@@ -226,15 +231,12 @@ const handleCommand = (input: string): string | null => {
 | \`/help\` | Show this help message |
 | \`/ls\` | List all projects |
 | \`/cd <project>\` | Open a project |
-| \`/theme <mode>\` | Toggle dark/light mode |
+| \`/theme <mode>\` | Toggle dark/light/retro modes |
 | \`/clear\` | Clear chat history |
 | \`/whoami\` | About Menno |
-| \`/pwd\` | Current location |
 | \`/about\` | Portfolio info |
 | \`/exit\` | Return to home |
-
-*Tip: You can also just ask me questions naturally!*`;
-
+`;
     case '/ls':
     case '/projects':
       const projectList = portfolioData.projects
@@ -261,8 +263,7 @@ const handleCommand = (input: string): string | null => {
       const terminalBio = "I am a Full Stack Developer with a passion for building digital experiences that feel natural and premium. I bridge the gap between creative frontend (Vue, Angular) and structured backend (.NET, Java). Currently looking for my first professional challenge to make an impact.";
       return `**${portfolioData.personal.name}**\n${portfolioData.personal.title} from ${portfolioData.personal.location}.\n\n${terminalBio}`;
 
-    case '/pwd':
-      return `📍 You are at: **mennoplochaet.com/chat**\n\nThis is my interactive portfolio terminal.`;
+
 
     case '/about':
     case '/cat':
@@ -289,35 +290,67 @@ const handleCommand = (input: string): string | null => {
 
     case '/theme':
       const mode = parts[1]?.toLowerCase();
-      const isCurrentlyDark = document.documentElement.classList.contains('dark');
-      const currentModeStr = isCurrentlyDark ? 'dark' : 'light';
+      const validThemes = ['dark', 'light', 'retro', 'default'];
       
-      if (mode === currentModeStr) {
-        const targetMode = isCurrentlyDark ? 'light' : 'dark';
-        pendingAction.value = { type: 'theme_switch', targetMode };
-        return `Theme is already set to **${mode} mode**. Would you like to switch to **${targetMode} mode**? (y/n)`;
+      // If no argument, show usage
+      if (!mode) {
+        return `Usage: \`/theme [dark|light|retro|default]\`\n\nCurrent theme: **${localStorage.theme || 'default'}**`;
       }
       
-      if (mode === 'dark') {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
-        return `🌑 Theme set to **dark mode**.`;
-      } else if (mode === 'light') {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-        return `☀️ Theme set to **light mode**.`;
-      } else {
-        // Toggle if no argument
-        if (isCurrentlyDark) {
+      // Validate argument
+      if (!validThemes.includes(mode)) {
+        return `Unknown theme: \`${mode}\`\n\nAvailable themes: **dark**, **light**, **retro**, **default**`;
+      }
+      
+      const isRetroActive = document.documentElement.classList.contains('retro');
+      const isDarkActive = document.documentElement.classList.contains('dark');
+
+      if (mode === 'default') {
+        document.documentElement.classList.remove('retro');
+        
+        if (isDarkActive) {
+          localStorage.theme = 'dark';
+          return `🌑 Theme set to **Default Dark**.`;
+        } else {
           document.documentElement.classList.remove('dark');
           localStorage.theme = 'light';
-          return `☀️ Switched to **light mode**.`;
+          return `☀️ Theme set to **Default Light**.`;
+        }
+      } 
+      
+      else if (mode === 'light') {
+        document.documentElement.classList.remove('dark');
+        if (isRetroActive) {
+          localStorage.theme = 'retro';
+          return `🎞️☀️ Theme set to **Retro Light**.`;
         } else {
-          document.documentElement.classList.add('dark');
+          localStorage.theme = 'light';
+          return `☀️ Theme set to **Light Mode**.`;
+        }
+      } 
+      
+      else if (mode === 'dark') {
+        document.documentElement.classList.add('dark');
+        if (isRetroActive) {
+          localStorage.theme = 'retro-dark';
+          return `🎞️🌑 Theme set to **Retro Dark**.`;
+        } else {
           localStorage.theme = 'dark';
-          return `🌑 Switched to **dark mode**.`;
+          return `🌑 Theme set to **Dark Mode**.`;
+        }
+      } 
+      
+      else if (mode === 'retro') {
+        document.documentElement.classList.add('retro');
+        if (isDarkActive) {
+          localStorage.theme = 'retro-dark';
+          return `🎞️🌑 Theme set to **Retro Dark**.`;
+        } else {
+          localStorage.theme = 'retro';
+          return `🎞️☀️ Theme set to **Retro Light**.`;
         }
       }
+      return null;
 
     case '/exit':
     case '/quit':
@@ -682,7 +715,7 @@ const renderMarkdown = (text: string) => {
 </script>
 
     <template>
-      <div class="h-[100dvh] md:h-auto md:min-h-screen flex flex-col bg-white dark:bg-soft-black text-black dark:text-white transition-colors duration-300 font-sans overflow-hidden md:overflow-visible">
+      <div class="h-[100dvh] md:h-auto md:min-h-screen flex flex-col bg-off-white dark:bg-soft-black text-black dark:text-white transition-colors duration-300 font-sans overflow-hidden md:overflow-visible">
         
         <!-- Back Button -->
         <div class="absolute top-0 left-0 z-50">
@@ -693,7 +726,7 @@ const renderMarkdown = (text: string) => {
         <MatrixRain v-if="isMatrixActive" />
 
         <!-- Top Fade Gradient -->
-        <div class="fixed top-0 left-0 w-full h-24 bg-gradient-to-b from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-30 pointer-events-none transition-colors duration-300"></div>
+        <div class="fixed top-0 left-0 w-full h-24 bg-gradient-to-b from-off-white via-off-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-30 pointer-events-none transition-colors duration-300"></div>
 
         <!-- Chat Container -->
         <div 
@@ -748,16 +781,18 @@ const renderMarkdown = (text: string) => {
         </div>
 
         <!-- Input Area -->
-        <div class="w-full fixed bottom-0 left-0 p-6 pt-20 bg-gradient-to-t from-white via-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
+        <div class="w-full fixed bottom-0 left-0 p-6 pt-20 bg-gradient-to-t from-off-white via-off-white to-transparent dark:from-soft-black dark:via-soft-black dark:to-transparent z-40 transition-colors duration-300 shrink-0">
           <div class="max-w-3xl mx-auto relative font-mono">
             
             <!-- Command Suggestions -->
             <div 
               v-if="showSuggestions"
-              class="absolute bottom-full left-0 mb-4 w-full bg-white/80 dark:bg-soft-black/80 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-lg shadow-lg overflow-hidden z-50 max-h-[40vh] overflow-y-auto"
+              class="command-suggestions absolute bottom-full left-0 mb-4 w-full bg-white/80 dark:bg-soft-black/80 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-lg shadow-lg z-50"
+              style="max-height: 40vh; overflow-y: auto;"
+              @wheel.stop
             >
               <div 
-                v-for="(cmd, index) in filteredCommands.slice(0, isMobile ? 5 : 10)" 
+                v-for="(cmd, index) in filteredCommands" 
                 :key="cmd"
                 class="px-4 py-2 cursor-pointer transition-colors duration-200 flex items-center justify-between"
                 :class="{ 'bg-black/5 dark:bg-white/10': index === suggestionIndex }"
@@ -856,5 +891,27 @@ const renderMarkdown = (text: string) => {
 }
 .typing-mode p::after {
   content: ' ';
+}
+
+/* Command suggestions dropdown - ensure scrollbar is visible */
+.command-suggestions {
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.command-suggestions::-webkit-scrollbar {
+  display: block !important;
+  width: 6px !important;
+}
+.command-suggestions::-webkit-scrollbar-track {
+  background: transparent;
+}
+.command-suggestions::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+.dark .command-suggestions::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
 }
 </style>
