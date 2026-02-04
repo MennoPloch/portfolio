@@ -96,7 +96,7 @@ const startScramble = () => {
       <div class="pt-2">
         <router-link 
           to="/chat" 
-          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-accent-blue hover:opacity-80 transition-opacity group"
+          class="inline-flex items-center gap-2 font-mono text-base font-bold uppercase tracking-widest text-accent-blue border-b-2 border-accent-blue pb-1 hover:text-soft-black dark:hover:text-white hover:border-soft-black dark:hover:border-white transition-all group"
           @mouseenter="startScramble"
         >
           <span class="relative overflow-hidden">

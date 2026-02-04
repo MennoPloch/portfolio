@@ -24,13 +24,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <footer class="bg-accent-blue text-soft-black py-12 relative overflow-hidden flex flex-col gap-12">
+  <footer class="bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] py-12 relative overflow-hidden flex flex-col gap-12 transition-colors duration-300 border-t border-transparent dark:border-accent-blue/20">
     
     <!-- Marquee -->
-    <div class="relative w-full overflow-hidden py-8 bg-soft-black/5">
+    <div class="relative w-full overflow-hidden py-8 bg-soft-black/5 dark:bg-black/20">
       <div ref="marqueeRef" class="flex whitespace-nowrap">
         <div class="marquee-content flex gap-8 px-4">
-          <span class="font-display text-8xl font-bold uppercase opacity-20">Menno Plochaet — Full Stack Developer — </span>
+          <span class="font-display text-8xl font-bold uppercase opacity-20 dark:text-accent-blue dark:opacity-40">Menno Plochaet — Full Stack Developer — </span>
         </div>
       </div>
     </div>
@@ -54,7 +54,7 @@ onMounted(() => {
       </div>
 
       <div class="flex flex-col items-center md:items-end gap-2 opacity-60">
-        <Logo class="w-8 h-8 text-soft-black dark:text-soft-black" />
+        <Logo class="w-8 h-8 text-soft-black dark:text-accent-blue" />
         <div class="font-mono text-xs">
           &copy; {{ new Date().getFullYear() }}
         </div>
