@@ -7,12 +7,14 @@ const isDark = ref(false)
 const toggleTheme = () => {
   isDark.value = !isDark.value
   
+  const isRetro = document.documentElement.classList.contains('retro')
+  
   if (isDark.value) {
     document.documentElement.classList.add('dark')
-    localStorage.theme = 'dark'
+    localStorage.theme = isRetro ? 'retro-dark' : 'dark'
   } else {
     document.documentElement.classList.remove('dark')
-    localStorage.theme = 'light'
+    localStorage.theme = isRetro ? 'retro' : 'light'
   }
 
   gsap.fromTo('.theme-icon', 
@@ -30,12 +32,32 @@ const onLeave = () => {
 }
 
 onMounted(() => {
-  if (localStorage.theme === 'dark') {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
+  // Restore saved theme (including retro variants)
+  const savedTheme = localStorage.theme
+  
+  if (savedTheme) {
+    if (savedTheme === 'retro-dark') {
+      document.documentElement.classList.add('retro', 'dark')
+      isDark.value = true
+    } else if (savedTheme === 'retro') {
+      document.documentElement.classList.add('retro')
+      document.documentElement.classList.remove('dark')
+      isDark.value = false
+    } else if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+      document.documentElement.classList.remove('retro')
+      isDark.value = true
+    } else {
+      // light or default
+      document.documentElement.classList.remove('dark', 'retro')
+      isDark.value = false
+    }
   } else {
-    isDark.value = false
-    document.documentElement.classList.remove('dark')
+    // Check system preference if no saved theme
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark')
+      isDark.value = true
+    }
   }
 
   // Watch for external theme changes (e.g. from ChatView)
