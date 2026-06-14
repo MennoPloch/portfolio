@@ -1,0 +1,15 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#F7F4EF"/>
+  <rect x="96" y="96" width="1408" height="808" rx="36" fill="#FFFFFF" stroke="#E4DDD1"/>
+  <text x="160" y="210" font-family="Arial, sans-serif" font-size="24" letter-spacing="8" fill="#E0623A">BRAND GUIDE V1</text>
+  <text x="160" y="330" font-family="Georgia, 'Times New Roman', serif" font-size="96" fill="#173B3F">Northline Studio</text>
+  <text x="160" y="395" font-family="Arial, sans-serif" font-size="30" fill="#6F7770">Identity system, color palette, typography, and export notes.</text>
+  <circle cx="276" cy="620" r="76" fill="#173B3F"/>
+  <circle cx="472" cy="620" r="76" fill="#E0623A"/>
+  <circle cx="668" cy="620" r="76" fill="#D7B46A"/>
+  <circle cx="864" cy="620" r="76" fill="#F7F4EF" stroke="#E4DDD1"/>
+  <text x="160" y="760" font-family="Arial, sans-serif" font-size="26" fill="#173B3F">Included exports</text>
+  <text x="160" y="815" font-family="Arial, sans-serif" font-size="24" fill="#6F7770">Primary logo / secondary mark / social avatar / landing page preview</text>
+  <path d="M1220 260C1220 201.458 1267.46 154 1326 154H1430C1430 212.542 1382.54 260 1324 260H1220Z" fill="#E0623A"/>
+  <path d="M1390 286C1390 344.542 1342.54 392 1284 392H1180C1180 333.458 1227.46 286 1286 286H1390Z" fill="#D7B46A"/>
+</svg>

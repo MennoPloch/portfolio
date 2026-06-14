@@ -80,7 +80,7 @@ const cardStyle = computed(() => {
       class="text-xs font-bold uppercase tracking-wider text-accent-blue flex items-center gap-1 group-hover:gap-2 transition-all pointer-events-none"
     >
       View Project 
-      <span>→</span>
+      <span>&rarr;</span>
     </button>
   </div>
 </template>

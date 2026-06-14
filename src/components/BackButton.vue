@@ -79,7 +79,7 @@ onUnmounted(() => {
       ]"
     >
       <span class="font-mono text-sm uppercase tracking-widest flex items-center gap-2 pointer-events-none">
-        <span v-if="!((props.isScrolled ?? internalIsScrolled) || forcePill)" class="text-lg leading-none -mt-[2px]">←</span>
+        <span v-if="!((props.isScrolled ?? internalIsScrolled) || forcePill)" class="text-lg leading-none -mt-[2px]">&larr;</span>
         <span>{{ ((props.isScrolled ?? internalIsScrolled) || forcePill) ? 'Back' : (label || 'Back') }}</span>
       </span>
     </button>

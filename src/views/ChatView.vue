@@ -40,6 +40,15 @@ const easterEggs = [
 const allCommands = [...coreCommands, ...easterEggs];
 
 const showSuggestions = ref(false);
+const starterPrompts = [
+  { label: 'Show my projects', prompt: '/projects' },
+  { label: 'What can I build?', prompt: 'What can you build?' },
+  { label: 'Contact me', prompt: 'How can someone contact you?' }
+];
+
+const showStarterPrompts = computed(() => {
+  return !userInput.value && !isLoading.value && !showSuggestions.value;
+});
 
 const detectProject = (content: string) => {
   // Look for [Project Name](/project/slug)
@@ -215,6 +224,13 @@ const insertSlash = () => {
   inputField.value?.focus();
 };
 
+const useStarterPrompt = async (prompt: string) => {
+  userInput.value = prompt;
+  showSuggestions.value = false;
+  await nextTick();
+  await sendMessage();
+};
+
 
 const handleCommand = (input: string): string | null => {
   const trimmed = input.trim().toLowerCase();
@@ -240,7 +256,7 @@ const handleCommand = (input: string): string | null => {
     case '/ls':
     case '/projects':
       const projectList = portfolioData.projects
-        .map(p => `📁 [${p.slug}](/project/${p.slug}) *(${p.tags.slice(0, 2).join(', ')})*`)
+        .map(p => `- [${p.slug}](/project/${p.slug}) *(${p.tags.slice(0, 2).join(', ')})*`)
         .join('  \n');
       return `\`~/projects\`  \n\n${projectList}`;
 
@@ -268,7 +284,7 @@ const handleCommand = (input: string): string | null => {
     case '/about':
     case '/cat':
       if (parts[1] === 'about' || cmd === '/about') {
-        return `**${portfolioData.personal.name}**\n\n${portfolioData.bio}\n\n📧 ${portfolioData.personal.email}`;
+        return `**${portfolioData.personal.name}**\n\n${portfolioData.bio}\n\nEmail: ${portfolioData.personal.email}`;
       }
       return `cat: ${parts[1] || 'missing argument'}: No such file or directory`;
 
@@ -282,7 +298,7 @@ const handleCommand = (input: string): string | null => {
       );
       if (project) {
         setTimeout(() => router.push(`/project/${project.slug}`), 500);
-        return `📂 Opening [${project.title}](/project/${project.slug})...`;
+        return `Opening [${project.title}](/project/${project.slug})...`;
       }
       return `cd: ${projectSlug}: No such project. Try \`/ls\` to see available projects.`;
 
@@ -310,11 +326,11 @@ const handleCommand = (input: string): string | null => {
         
         if (isDarkActive) {
           localStorage.theme = 'dark';
-          return `🌑 Theme set to **Default Dark**.`;
+          return `Theme set to **Default Dark**.`;
         } else {
           document.documentElement.classList.remove('dark');
           localStorage.theme = 'light';
-          return `☀️ Theme set to **Default Light**.`;
+          return `Theme set to **Default Light**.`;
         }
       } 
       
@@ -322,10 +338,10 @@ const handleCommand = (input: string): string | null => {
         document.documentElement.classList.remove('dark');
         if (isRetroActive) {
           localStorage.theme = 'retro';
-          return `🎞️☀️ Theme set to **Retro Light**.`;
+          return `Theme set to **Retro Light**.`;
         } else {
           localStorage.theme = 'light';
-          return `☀️ Theme set to **Light Mode**.`;
+          return `Theme set to **Light Mode**.`;
         }
       } 
       
@@ -333,10 +349,10 @@ const handleCommand = (input: string): string | null => {
         document.documentElement.classList.add('dark');
         if (isRetroActive) {
           localStorage.theme = 'retro-dark';
-          return `🎞️🌑 Theme set to **Retro Dark**.`;
+          return `Theme set to **Retro Dark**.`;
         } else {
           localStorage.theme = 'dark';
-          return `🌑 Theme set to **Dark Mode**.`;
+          return `Theme set to **Dark Mode**.`;
         }
       } 
       
@@ -344,10 +360,10 @@ const handleCommand = (input: string): string | null => {
         document.documentElement.classList.add('retro');
         if (isDarkActive) {
           localStorage.theme = 'retro-dark';
-          return `🎞️🌑 Theme set to **Retro Dark**.`;
+          return `Theme set to **Retro Dark**.`;
         } else {
           localStorage.theme = 'retro';
-          return `🎞️☀️ Theme set to **Retro Light**.`;
+          return `Theme set to **Retro Light**.`;
         }
       }
       return null;
@@ -355,31 +371,31 @@ const handleCommand = (input: string): string | null => {
     case '/exit':
     case '/quit':
       setTimeout(() => router.push('/'), 500);
-      return `Goodbye! Redirecting to home... 👋`;
+      return `Goodbye. Redirecting to home...`;
 
     case '/matrix':
       isMatrixActive.value = !isMatrixActive.value;
       if (isMatrixActive.value) {
-        return `🕶️ **Matrix mode activated.** Follow the white rabbit.`;
+        return `**Matrix mode activated.** Follow the white rabbit.`;
       } else {
-        return `🔌 **Matrix mode deactivated.** Welcome back to the real world.`;
+        return `**Matrix mode deactivated.** Welcome back to the real world.`;
       }
 
     case '/sudo':
-      return `Nice try! 😏 You don't have root access here.`;
+      return `Nice try. You don't have root access here.`;
 
     case '/rm':
       if (trimmed.includes('-rf')) {
-        return `🛑 I'm not that kind of terminal! My files are safe.`;
+        return `I'm not that kind of terminal. My files are safe.`;
       }
       return `rm: missing operand`;
 
     case '/ping':
-      return `pong 🏓`;
+      return `pong`;
 
     case '/coffee':
     case '/brew':
-      return `☕ Brewing... Actually, I prefer tea!`;
+      return `Brewing... Actually, I prefer tea.`;
 
     case '/vim':
       return `How do I exit?! Just kidding. Use \`/clear\` to start fresh.`;
@@ -404,6 +420,13 @@ const handleScroll = () => {
 
 onMounted(async () => {
   const greetings = [
+    "Hey, I'm Menno. Ask me about my projects, skills, or bouldering.",
+    "Hi, I'm Menno. Curious about my work, stack, or the way I build?",
+    "Hello. I can walk you through my projects, internships, and tech choices.",
+    "Hey there. Ask me about code, design, or what I like building.",
+    "Hi. I can show you what I've built and how I think through software."
+  ];
+  const previousGreetings = [
     "Hey. I'm Menno's digital twin. Ask me about my projects, skills, or bouldering.",
     "Hi there! I'm the AI version of Menno. Curious about my work or hobbies?",
     "Hello! I'm Menno's digital assistant. What would you like to know?",
@@ -426,7 +449,7 @@ onMounted(async () => {
   // Check if chat is empty OR only contains a previous greeting (any of them)
   const firstMsg = messages.value[0];
   const shouldPlayIntro = messages.value.length === 0 || 
-    (messages.value.length === 1 && firstMsg?.role === 'model' && greetings.includes(firstMsg?.content || ''));
+    (messages.value.length === 1 && firstMsg?.role === 'model' && [...greetings, ...previousGreetings].includes(firstMsg?.content || ''));
 
   if (shouldPlayIntro) {
     // Clear existing history if it's just an old greeting so we can re-type a new one
@@ -568,12 +591,12 @@ const sendMessage = async () => {
         if (mode === 'dark') {
           document.documentElement.classList.add('dark');
           localStorage.theme = 'dark';
-          addMessage('model', `🌑 Switched to **dark mode**.`);
+          addMessage('model', `Switched to **dark mode**.`);
           await scrollToBottom('auto');
         } else {
           document.documentElement.classList.remove('dark');
           localStorage.theme = 'light';
-          addMessage('model', `☀️ Switched to **light mode**.`);
+          addMessage('model', `Switched to **light mode**.`);
           await scrollToBottom('auto');
         }
       }
@@ -640,7 +663,7 @@ const sendMessage = async () => {
     // Check for quota exceeded (429 or specific error message)
     if (response.status === 429 || (data.error && data.error.toLowerCase().includes('quota'))) {
       isLoading.value = false;
-      addMessage('model', `⚠️ **AI quota exceeded!**\n\nYou can still use terminal commands like \`/ls\`, \`/cd\`, \`/help\`, etc.\n\nTry again later or contact me at **plochaetm@gmail.com**`);
+      addMessage('model', `**AI quota exceeded.**\n\nYou can still use terminal commands like \`/ls\`, \`/cd\`, \`/help\`, etc.\n\nTry again later or contact me at **plochaetm@gmail.com**`);
       await scrollToBottom('auto');
       return;
     }
@@ -658,7 +681,7 @@ const sendMessage = async () => {
     
     // Check if it's a quota error
     if (errorMsg.toLowerCase().includes('quota') || errorMsg.toLowerCase().includes('rate limit')) {
-      addMessage('model', `⚠️ **AI quota exceeded!**\n\nYou can still use terminal commands like \`/ls\`, \`/cd\`, \`/help\`, etc.\n\nTry again later or contact me at **plochaetm@gmail.com**`);
+      addMessage('model', `**AI quota exceeded.**\n\nYou can still use terminal commands like \`/ls\`, \`/cd\`, \`/help\`, etc.\n\nTry again later or contact me at **plochaetm@gmail.com**`);
       await scrollToBottom('auto');
     } else {
       addMessage('model', 'Oops, something went wrong. Please try again later or email plochaetm@gmail.com.');
@@ -804,6 +827,18 @@ const renderMarkdown = (text: string) => {
               </div>
             </div>
 
+            <div v-if="showStarterPrompts" class="mb-4 flex flex-wrap gap-2">
+              <button
+                v-for="starter in starterPrompts"
+                :key="starter.label"
+                type="button"
+                class="rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 px-3 py-2 text-xs uppercase tracking-widest text-black/60 dark:text-white/60 backdrop-blur-sm transition-colors hover:border-accent-blue hover:text-accent-blue"
+                @click="useStarterPrompt(starter.prompt)"
+              >
+                {{ starter.label }}
+              </button>
+            </div>
+
             <div class="relative group flex items-end gap-3">
               <span class="text-black/40 dark:text-white/40 text-lg mb-3">></span>
               <textarea
@@ -822,6 +857,8 @@ const renderMarkdown = (text: string) => {
               <button 
                 v-if="!userInput"
                 @click="insertSlash"
+                type="button"
+                aria-label="Show commands"
                 class="group/btn absolute right-2 bottom-3 w-7 h-7 flex items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-black/50 dark:text-white/50 transition-all duration-200 font-mono text-sm"
               >
                 /

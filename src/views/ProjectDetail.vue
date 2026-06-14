@@ -370,7 +370,7 @@ onUnmounted(() => {
       <div class="px-4 md:px-12 lg:px-24 grid lg:grid-cols-12 gap-12 lg:gap-24">
         
         <!-- Sticky Sidebar (Description) -->
-        <div class="lg:col-span-4 lg:sticky lg:top-32 h-fit space-y-12 project-meta min-w-0">
+        <div class="lg:col-span-4 lg:sticky lg:top-32 h-fit space-y-12 project-meta min-w-0 order-1">
           <div class="space-y-8">
             <div class="border-t border-soft-black/10 dark:border-off-white/10 pt-4">
               <h3 class="font-mono text-xs uppercase tracking-widest opacity-50 mb-2">Role</h3>
@@ -382,13 +382,21 @@ onUnmounted(() => {
             </div>
             <div v-if="project.link" class="border-t border-soft-black/10 dark:border-off-white/10 pt-4">
               <h3 class="font-mono text-xs uppercase tracking-widest opacity-50 mb-2">Link</h3>
-              <a :href="project.link" target="_blank" class="font-mono text-accent-blue hover:underline break-all">
-                Visit Project ↗
+              <a
+                :href="project.link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group/link inline-flex max-w-full items-center gap-2 font-mono text-sm text-accent-blue underline decoration-accent-blue/30 underline-offset-4 transition-colors hover:text-soft-black hover:decoration-soft-black dark:hover:text-off-white dark:hover:decoration-off-white"
+              >
+                <span class="truncate">{{ project.linkLabel || 'Visit Project' }}</span>
+                <span class="transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5">
+                  &nearr;
+                </span>
               </a>
             </div>
           </div>
 
-          <div class="prose dark:prose-invert max-w-none">
+          <div class="hidden lg:block prose dark:prose-invert max-w-none">
             <p class="font-mono text-lg leading-relaxed opacity-80 whitespace-pre-line break-words">
               {{ project.longDescription || project.description }}
             </p>
@@ -396,7 +404,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Main Content & Gallery -->
-        <div class="lg:col-span-8 space-y-8 gallery-section min-w-0">
+        <div class="lg:col-span-8 space-y-8 gallery-section min-w-0 order-2">
           
           <!-- Desktop: Main Media Display -->
           <div 
@@ -410,6 +418,7 @@ onUnmounted(() => {
                 :src="activeMedia.src"
                 class="w-full h-full object-contain"
                 controls
+                preload="none"
                 playsinline
               ></video>
               <img 
@@ -502,6 +511,7 @@ onUnmounted(() => {
                     :src="item.src"
                     class="w-full h-full object-contain"
                     controls
+                    preload="none"
                     playsinline
                   ></video>
                   <img 
@@ -535,6 +545,12 @@ onUnmounted(() => {
           </div>
 
         </div>
+
+        <div class="lg:hidden order-3 prose dark:prose-invert max-w-none min-w-0">
+          <p class="font-mono text-base leading-relaxed opacity-80 whitespace-pre-line break-words">
+            {{ project.longDescription || project.description }}
+          </p>
+        </div>
       </div>
 
     </div>
@@ -565,7 +581,7 @@ onUnmounted(() => {
           class="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-[60] w-12 h-12 items-center justify-center rounded-full bg-soft-black/50 text-off-white border border-off-white/20 hover:bg-accent-blue hover:border-accent-blue transition-all duration-300 backdrop-blur-sm group"
           aria-label="Previous"
         >
-          <span class="font-mono text-2xl group-hover:-translate-x-0.5 transition-transform">←</span>
+          <span class="font-mono text-2xl group-hover:-translate-x-0.5 transition-transform">&larr;</span>
         </button>
 
         <button 
@@ -574,17 +590,17 @@ onUnmounted(() => {
           class="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-[60] w-12 h-12 items-center justify-center rounded-full bg-soft-black/50 text-off-white border border-off-white/20 hover:bg-accent-blue hover:border-accent-blue transition-all duration-300 backdrop-blur-sm group"
           aria-label="Next"
         >
-          <span class="font-mono text-2xl group-hover:translate-x-0.5 transition-transform">→</span>
+          <span class="font-mono text-2xl group-hover:translate-x-0.5 transition-transform">&rarr;</span>
         </button>
 
         <div class="relative w-full h-full flex items-center justify-center overflow-hidden" @click.stop>
           <button 
             @click="closeLightbox" 
-            class="fixed top-6 right-6 group flex items-center gap-3 z-[60] bg-soft-black/80 text-off-white px-6 py-3 rounded-full border border-off-white/20 hover:bg-accent-blue hover:border-accent-blue transition-all duration-300 shadow-lg backdrop-blur-md"
+            class="fixed top-6 right-6 group inline-flex h-14 items-center gap-3 z-[60] bg-soft-black/80 text-off-white px-6 rounded-full border border-off-white/20 hover:bg-accent-blue hover:border-accent-blue transition-all duration-300 shadow-lg backdrop-blur-md"
             aria-label="Close"
           >
-            <span class="font-mono text-sm uppercase tracking-widest font-bold">Close</span>
-            <span class="font-mono text-xl leading-none">✕</span>
+            <span class="font-mono text-sm uppercase tracking-widest font-bold leading-none">Close</span>
+            <span class="flex h-4 w-4 items-center justify-center font-mono text-lg leading-none">&times;</span>
           </button>
           
           <Transition :name="slideDirection === 'next' ? 'slide-next' : 'slide-prev'">
@@ -595,6 +611,7 @@ onUnmounted(() => {
                 class="max-w-full max-h-full object-contain shadow-2xl"
                 controls
                 autoplay
+                preload="none"
               ></video>
               
               <img 

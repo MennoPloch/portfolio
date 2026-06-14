@@ -1,6 +1,8 @@
 import { supabase } from '../lib/supabase'
 
 export function useAnalytics() {
+    const shouldLogAnalyticsErrors = import.meta.env.DEV
+
     const logEvent = async (name: string, metadata: object = {}) => {
         try {
             const { error } = await supabase
@@ -12,13 +14,17 @@ export function useAnalytics() {
                     referrer: document.referrer,
                     user_agent: navigator.userAgent,
                     timestamp: new Date().toISOString()
-                })
+            })
 
             if (error) {
-                console.error('Error logging event:', error)
+                if (shouldLogAnalyticsErrors) {
+                    console.warn('Error logging analytics event:', error)
+                }
             }
         } catch (err) {
-            console.error('Unexpected error logging event:', err)
+            if (shouldLogAnalyticsErrors) {
+                console.warn('Unexpected error logging analytics event:', err)
+            }
         }
     }
 

@@ -11,6 +11,7 @@ export interface Project {
     image?: string
     video?: string
     link?: string
+    linkLabel?: string
 }
 
 export interface Experience {
@@ -74,11 +75,33 @@ export const portfolioData = {
     ] as Experience[],
     projects: [
         {
+            id: 10,
+            slug: "handoff",
+            title: "Handoff",
+            description: "A calm client delivery portal I built for freelancers: files, approval requests, invoices, and secure client links in one place.",
+            longDescription: "I built Handoff to solve the messy part after a project is finished: sending final files, asking for approval, handling invoices, and keeping clients out of email-thread chaos. It gives freelancers a private delivery room with versioned files, status updates, approval requests, invoice checkout, secure magic links, email verification, recipient controls, multilingual client views, and an audit trail.",
+            role: "Solo Full Stack Developer",
+            year: "Spring 2026",
+            tags: ["React", "Client Portal", "Supabase", "TypeScript", "Stripe"],
+            image: "/images/Handoff/LandingPage.png",
+            link: "https://handoff-app.eu",
+            linkLabel: "handoff-app.eu",
+            gallery: [
+                "/images/Handoff/LandingPage.png",
+                "/images/Handoff/HowHandoffWorks.png",
+                "/images/Handoff/SignIn.png",
+                "/images/Handoff/ProjectOverview.png",
+                "/images/Handoff/FilesAndApprovals.png",
+                "/images/Handoff/ClientDeliveryRoom.png",
+                "/images/Handoff/DashboardDark.png"
+            ]
+        },
+        {
             id: 9,
             slug: "portfolio",
             title: "Portfolio",
             description: "My personal corner of the internet. I built this to test out some new ideas with Vue 3 and GSAP, focusing on smooth animations and a terminal-style chat that actually works.",
-            longDescription: "This is my personal playground. I wanted to build something that felt premium but also fun. It's built with Vue 3 and uses GSAP for all the heavy lifting on animations. The chat isn't just a gimmick—it's a fully functional 'digital twin' that can answer questions about me.",
+            longDescription: "This is my personal playground. I wanted to build something that felt premium but also fun. It's built with Vue 3 and uses GSAP for all the heavy lifting on animations. The chat isn't just a gimmick - it's a fully functional 'digital twin' that can answer questions about me.",
             role: "Solo Full Stack Developer",
             year: "Nov 2025 - Present",
             tags: ["Vue 3", "TypeScript", "GSAP", "Tailwind", "Gemini API"],
@@ -90,7 +113,7 @@ export const portfolioData = {
             slug: "mycloudmen",
             title: "MyCLOUDMEN",
             description: "A tool I built during my internship to automate license management. It connects Teamleader CRM with Google Workspace so the company doesn't have to manually provision accounts anymore.",
-            longDescription: "I built this during my internship at CLOUDMEN. The problem was that they were manually creating Google Workspace accounts for every new client. I built a system that links Teamleader CRM to Google's API, so when a deal is sold, the licenses are created automatically. Also, accessing invoices was a pain—they had to manually email them every time a client asked. I added a portal where clients can just log in and manage their own invoices directly. It's built with Angular and Spring Boot.",
+            longDescription: "I built this during my internship at CLOUDMEN. The problem was that they were manually creating Google Workspace accounts for every new client. I built a system that links Teamleader CRM to Google's API, so when a deal is sold, the licenses are created automatically. Also, accessing invoices was a pain - they had to manually email them every time a client asked. I added a portal where clients can just log in and manage their own invoices directly. It's built with Angular and Spring Boot.",
             role: "Solo Full Stack Developer",
             year: "Spring 2025",
             tags: ["Angular", "Spring Boot", "MongoDB", "Google Workspace API", "Teamleader API"],
@@ -173,10 +196,10 @@ export const portfolioData = {
             slug: "greekrunner",
             title: "GreekRunner",
             description: "A VR stealth game where the guard actually learns from you. I used reinforcement learning to make the AI smarter the more you play.",
-            longDescription: "A VR stealth game set in a Greek garden. The cool part is the guard—it's not scripted. I trained an AI agent using reinforcement learning (ML-Agents) so it learns from how you play and gets harder to sneak past.",
+            longDescription: "A VR stealth game set in a Greek garden. The cool part is the guard - it's not scripted. I trained an AI agent using reinforcement learning (ML-Agents) so it learns from how you play and gets harder to sneak past.",
             role: "Full Stack Developer",
             year: "Spring 2024",
-            tags: ["Unity", "ML‑Agents", "VR", "C#", "TensorFlow"],
+            tags: ["Unity", "ML-Agents", "VR", "C#", "TensorFlow"],
             image: "/images/GreekRunner/Thumbnail.png",
             video: "/images/GreekRunner/AITraining.mp4",
             gallery: [
@@ -188,7 +211,7 @@ export const portfolioData = {
             slug: "green-survival",
             title: "Green Survival",
             description: "A survival game about cleaning up the world instead of just surviving it. As you clean up trash and fix things, the world visually gets brighter and healthier.",
-            longDescription: "Most survival games are about fighting nature. This one is about fixing it. You start in a polluted world, and as you clean up trash and build renewable energy, the environment actually changes—the sky gets blue, the grass grows back. It's built in Unity.",
+            longDescription: "Most survival games are about fighting nature. This one is about fixing it. You start in a polluted world, and as you clean up trash and build renewable energy, the environment actually changes - the sky gets blue, the grass grows back. It's built in Unity.",
             role: "Full Stack Developer",
             year: "Fall 2023",
             tags: ["Unity", "C#", "Blender", "3D Modeling", "Game Design"],

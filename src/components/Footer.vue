@@ -30,7 +30,7 @@ onMounted(() => {
     <div class="relative w-full overflow-hidden py-8 bg-soft-black/5 dark:bg-black/20">
       <div ref="marqueeRef" class="flex whitespace-nowrap">
         <div class="marquee-content flex gap-8 px-4">
-          <span class="font-display text-8xl font-bold uppercase opacity-20 dark:text-accent-blue dark:opacity-40">Menno Plochaet — Full Stack Developer — </span>
+          <span class="font-display text-8xl font-bold uppercase opacity-20 dark:text-accent-blue dark:opacity-40">Menno Plochaet &mdash; Full Stack Developer &mdash; </span>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@ onMounted(() => {
     <div class="container mx-auto px-4 md:px-12 grid grid-cols-1 md:grid-cols-3 items-center gap-8">
       <div class="text-center md:text-left">
         <h2 class="font-display text-4xl font-bold">Let's Talk</h2>
-        <p class="font-mono text-sm opacity-60 mt-2">Open for new opportunities</p>
+        <p class="font-mono text-sm opacity-60 mt-2">Email or LinkedIn both work</p>
       </div>
 
       <div class="flex gap-8 justify-center">

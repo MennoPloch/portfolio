@@ -187,6 +187,15 @@ onUnmounted(() => {
               <span class="absolute -right-4 top-0 opacity-30">/</span>
             </span>
           </div>
+
+          <div v-if="project.image" class="md:hidden mt-6 aspect-[16/10] w-full overflow-hidden rounded-md border border-soft-black/10 dark:border-off-white/10 bg-soft-black/5 dark:bg-off-white/5">
+            <img
+              :src="project.image"
+              :alt="project.title"
+              class="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </div>
 
         <div class="2xl:text-right mt-6 2xl:mt-0 z-10 flex flex-col items-start 2xl:items-end gap-2">
@@ -196,7 +205,7 @@ onUnmounted(() => {
           <!-- Mobile Click Indicator - Only on actual touch devices -->
           <div class="[@media(hover:none)]:flex hidden items-center gap-2 text-accent-blue font-mono text-sm uppercase tracking-wider">
             <span>View Project</span>
-            <span>→</span>
+            <span>&rarr;</span>
           </div>
         </div>
       </div>

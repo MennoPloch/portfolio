@@ -5,13 +5,39 @@ import gsap from 'gsap'
 import { isLoading } from '../store/loading'
 
 const percentage = ref(0)
-const show = ref(true)
+const PRELOADER_SEEN_KEY = 'portfolio-preloader-seen'
+
+const hasSeenPreloader = () => {
+  try {
+    return sessionStorage.getItem(PRELOADER_SEEN_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+const markPreloaderSeen = () => {
+  try {
+    sessionStorage.setItem(PRELOADER_SEEN_KEY, 'true')
+  } catch {
+    // Ignore storage failures so the site can still load normally.
+  }
+}
+
+const show = ref(!hasSeenPreloader())
 
 onMounted(() => {
+  if (!show.value) {
+    document.body.style.overflow = ''
+    isLoading.value = false
+    return
+  }
+
+  markPreloaderSeen()
+
   const tl = gsap.timeline({
     onComplete: () => {
       show.value = false
-      document.body.style.overflow = 'auto'
+      document.body.style.overflow = ''
       isLoading.value = false
     }
   })

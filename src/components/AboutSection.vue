@@ -37,7 +37,7 @@ onUnmounted(() => {
 // Scramble Effect
 const originalText = "Say hello to my digital twin"
 const scrambledText = ref(originalText)
-const chars = "!<>-_\\/[]{}—=+*^?#________"
+const chars = "!<>-_\\/[]{}-=+*^?#________"
 let scrambleInterval: any = null
 
 const startScramble = () => {
@@ -96,14 +96,15 @@ const startScramble = () => {
       <div class="pt-2">
         <router-link 
           to="/chat" 
+          aria-label="Say hello to my digital twin"
           class="inline-flex items-center gap-2 font-mono text-base font-bold uppercase tracking-widest text-accent-blue border-b-2 border-accent-blue pb-1 hover:text-soft-black dark:hover:text-white hover:border-soft-black dark:hover:border-white transition-all group"
           @mouseenter="startScramble"
         >
           <span class="relative overflow-hidden">
-            <span class="invisible">Say hello to my digital twin</span>
-            <span class="absolute top-0 left-0">{{ scrambledText }}</span>
+            <span class="invisible" aria-hidden="true">Say hello to my digital twin</span>
+            <span class="absolute top-0 left-0" aria-hidden="true">{{ scrambledText }}</span>
           </span>
-          <span class="group-hover:translate-x-1 transition-transform">-></span>
+          <span class="group-hover:translate-x-1 transition-transform" aria-hidden="true">-&gt;</span>
         </router-link>
       </div>
 
